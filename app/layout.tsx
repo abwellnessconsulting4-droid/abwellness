@@ -4,21 +4,46 @@ import "@/resources/custom.css";
 import "./globals.css";
 
 import classNames from "classnames";
+import type { Viewport } from "next";
 import { Column, Flex, Meta, Schema, ThemeInit } from "@once-ui-system/core";
 import { Providers } from "@/components/providers";
+import { SITE_NAME } from "@/lib/constants";
 import { dataStyle, fonts, style } from "@/resources/once-ui.config";
-import { meta, schema } from "@/resources/seo";
+import { baseURL, meta, schema } from "@/resources/seo";
+
+export const viewport: Viewport = {
+  themeColor: "#001428",
+  colorScheme: "dark",
+};
 
 export async function generateMetadata() {
-  return Meta.generate({
+  const generated = Meta.generate({
     title: meta.home.title,
     description: meta.home.description,
     baseURL: meta.home.canonical,
     path: meta.home.path,
-    image: meta.home.image,
     robots: meta.home.robots,
     canonical: meta.home.canonical,
   });
+
+  return {
+    ...generated,
+    metadataBase: new URL(baseURL),
+    applicationName: SITE_NAME,
+    openGraph: {
+      title: meta.home.title,
+      description: meta.home.description,
+      type: "website",
+      url: meta.home.canonical,
+      siteName: SITE_NAME,
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: meta.home.title,
+      description: meta.home.description,
+    },
+  };
 }
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

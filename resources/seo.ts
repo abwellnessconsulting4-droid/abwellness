@@ -13,7 +13,7 @@ export const meta = {
     path: "/",
     title: `${SITE_NAME} — Coming Soon`,
     description: `${SITE_DESCRIPTION} ${SITE_TAGLINE}`,
-    image: "/images/logo_ab.png",
+    image: "/images/og.png",
     canonical: baseURL,
     robots: "index,follow",
   },
@@ -25,5 +25,5 @@ export const schema = {
   description: meta.home.description,
   baseURL,
   path: "/",
-  image: "/images/logo_ab.png",
+  image: "/images/og.png",
 };
