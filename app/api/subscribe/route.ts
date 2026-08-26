@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { MongoServerError } from "mongodb";
 import { connectToDatabase } from "@/lib/mongodb";
+import { sendWaitlistEmails } from "@/lib/resend";
 import { normalizeEmail, validateEmail } from "@/lib/validations";
 import { EmailSubscriber } from "@/models/EmailSubscriber";
 import type { SubscribeResponse } from "@/types";
@@ -48,6 +49,12 @@ export async function POST(request: Request) {
   try {
     await connectToDatabase();
     await EmailSubscriber.create({ email, source: "waitlist" });
+
+    try {
+      await sendWaitlistEmails(email);
+    } catch (error) {
+      console.error("Failed to send waitlist emails", error);
+    }
 
     return json(
       {
