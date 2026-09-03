@@ -79,7 +79,18 @@ export function CountdownTimer({ targetDate }: { targetDate: string }) {
           background="surface"
           border="neutral-alpha-weak"
         >
-          <Text variant="display-strong-s" onBackground="neutral-strong">
+          <Text
+            variant="display-strong-s"
+            family="code"
+            onBackground="neutral-strong"
+            className="tabular-nums"
+            style={{
+              fontVariantNumeric: "lining-nums tabular-nums",
+              minWidth: "2.75ch",
+              textAlign: "center",
+              fontFeatureSettings: '"lnum" 1, "tnum" 1',
+            }}
+          >
             {unit.key === "days" ? display[unit.key] : pad(display[unit.key])}
           </Text>
           <Text variant="label-default-s" onBackground="neutral-medium">
