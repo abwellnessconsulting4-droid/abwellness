@@ -9,7 +9,7 @@ import { Column, Flex, Meta, Schema, ThemeInit } from "@once-ui-system/core";
 import { Providers } from "@/components/providers";
 import { SITE_NAME } from "@/lib/constants";
 import { dataStyle, fonts, style } from "@/resources/once-ui.config";
-import { baseURL, meta, schema } from "@/resources/seo";
+import { baseURL, isIndexable, meta, schema } from "@/resources/seo";
 
 export const viewport: Viewport = {
   themeColor: "#001428",
@@ -28,6 +28,8 @@ export async function generateMetadata() {
 
   return {
     ...generated,
+    title: { default: meta.home.title, template: `%s | ${SITE_NAME}` },
+    robots: isIndexable() ? { index: true, follow: true } : { index: false, follow: false },
     metadataBase: new URL(baseURL),
     applicationName: SITE_NAME,
     openGraph: {
