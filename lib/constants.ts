@@ -7,8 +7,8 @@ export const SITE_DESCRIPTION =
   "AB Wellness Consulting helps individuals and organizations build sustainable wellness practices with guidance that is calm, personal, and grounded in long-term growth.";
 export const CONTACT_EMAIL = "hello@abwellnessconsulting.com";
 
-/** Launch date: October 1, 2026. */
-export const LAUNCH_DATE_ISO = "2026-10-01T09:00:00-04:00";
+/** Launch date: December 1, 2026, 9:00 AM Eastern (EST, UTC-5). */
+export const LAUNCH_DATE_ISO = "2026-12-01T09:00:00-05:00";
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {
