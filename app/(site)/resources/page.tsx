@@ -36,7 +36,7 @@ export default function ResourcesPage() {
                   {resource.name}
                 </Heading>
               </Row>
-              <SmartLink href={resource.href}>
+              <SmartLink href={resource.href} className="tap-target">
                 <Text variant="heading-strong-l">{resource.contact}</Text>
               </SmartLink>
               <Text variant="body-default-s" onBackground="neutral-medium">

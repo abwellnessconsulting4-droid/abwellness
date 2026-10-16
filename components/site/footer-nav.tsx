@@ -22,7 +22,7 @@ export function FooterNav() {
         <Text variant="body-default-s" onBackground="neutral-medium">
           {SITE_TAGLINE}
         </Text>
-        <SmartLink href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</SmartLink>
+        <SmartLink href={`mailto:${CONTACT_EMAIL}`} className="tap-target">{CONTACT_EMAIL}</SmartLink>
         <Text variant="body-default-s" onBackground="neutral-weak">
           {CONTACT_DETAILS.phone}
         </Text>
@@ -35,7 +35,7 @@ export function FooterNav() {
           <Column as="ul" gap="8" className="list-none p-0 m-0">
             {group.links.map((link) => (
               <li key={link.href}>
-                <SmartLink href={link.href}>{link.label}</SmartLink>
+                <SmartLink href={link.href} className="tap-target">{link.label}</SmartLink>
               </li>
             ))}
           </Column>

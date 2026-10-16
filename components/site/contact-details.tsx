@@ -25,7 +25,7 @@ export function ContactDetails() {
                 {row.label}
               </Text>
               <Text as="dd" variant="body-default-m" className="m-0">
-                {row.href ? <SmartLink href={row.href}>{row.value}</SmartLink> : row.value}
+                {row.href ? <SmartLink href={row.href} className="tap-target">{row.value}</SmartLink> : row.value}
               </Text>
             </Column>
           </Row>

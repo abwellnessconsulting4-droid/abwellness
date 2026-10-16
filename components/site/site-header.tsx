@@ -52,7 +52,7 @@ export function SiteHeader() {
             <Text variant="heading-strong-s" onBackground="neutral-strong">
               AB Wellness
             </Text>
-            <Text variant="label-default-xs" onBackground="brand-medium">
+            <Text variant="label-default-s" onBackground="brand-medium">
               Consulting Inc.
             </Text>
           </Column>

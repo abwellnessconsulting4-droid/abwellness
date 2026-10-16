@@ -111,3 +111,19 @@ body > main {
 .monogram--l {
   font-size: 96px;
 }
+
+/* Comfortable touch targets (44px) for standalone links on touch screens. */
+@media (pointer: coarse) {
+  .tap-target {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+
+/* Once UI checkboxes: pad the clickable label so each row is a 44px touch target. */
+@media (pointer: coarse) {
+  .checkbox-row > :last-child {
+    padding-block: 13px;
+  }
+}

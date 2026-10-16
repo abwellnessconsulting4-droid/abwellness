@@ -71,6 +71,7 @@ export function RequestServicesForm() {
         <Grid columns="2" gap="8" s={{ columns: 1 }}>
           {SERVICES.map((service) => (
             <Checkbox
+              className="checkbox-row"
               key={service.title}
               label={service.title}
               isChecked={services.includes(service.title)}
@@ -89,6 +90,7 @@ export function RequestServicesForm() {
       />
 
       <Checkbox
+        className="checkbox-row"
         label="I agree to be contacted about this request."
         description="We'll only use your information to respond. See our privacy policy."
         isChecked={consent}

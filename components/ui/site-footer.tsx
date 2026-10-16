@@ -35,7 +35,7 @@ export function SiteFooter() {
       <Text variant="label-default-s" onBackground="neutral-medium" align="center">
         © {year} {SITE_LEGAL_NAME}. All rights reserved.
       </Text>
-      <SmartLink href={`mailto:${CONTACT_EMAIL}`} unstyled>
+      <SmartLink href={`mailto:${CONTACT_EMAIL}`} unstyled className="tap-target">
         <Text variant="label-default-s" onBackground="brand-medium">
           {CONTACT_EMAIL}
         </Text>

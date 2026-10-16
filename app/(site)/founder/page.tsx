@@ -2,6 +2,7 @@ import { Column, Heading, Icon, Row, Text } from "@once-ui-system/core";
 import { CtaBand, PageHero, Section } from "@/components/site/blocks";
 import { FOUNDER } from "@/content/site";
 import { SITE_NAME } from "@/lib/constants";
+import { founderJsonLd, JsonLd } from "@/components/site/json-ld";
 import { pageMetadata } from "@/resources/seo";
 
 export const metadata = pageMetadata({
@@ -13,6 +14,7 @@ export const metadata = pageMetadata({
 export default function FounderPage() {
   return (
     <>
+      <JsonLd data={founderJsonLd()} />
       <PageHero eyebrow="Our founder" title={FOUNDER.name} description={`${FOUNDER.title}, ${SITE_NAME}`} />
 
       <Section id="story" align="start">

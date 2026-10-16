@@ -15,12 +15,13 @@ import { APPROACH_STEPS, AUDIENCES, FOUNDER, PROGRAMS, SERVICES } from "@/conten
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE } from "@/lib/constants";
 import { getSiteMode } from "@/lib/site-mode";
 
+// Title, share card, and brand image come from the root layout (mode-aware in
+// resources/seo.ts); redefining openGraph here would drop the inherited image.
 export function generateMetadata(): Metadata {
   if (getSiteMode() === "coming-soon") {
     return {};
   }
   return {
-    title: { absolute: `${SITE_NAME} | ${SITE_TAGLINE}` },
     description: SITE_DESCRIPTION,
     alternates: { canonical: "/" },
   };

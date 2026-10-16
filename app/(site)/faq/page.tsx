@@ -1,6 +1,7 @@
 import { AccordionGroup, Column, Heading, Text } from "@once-ui-system/core";
 import { CtaBand, PageHero, Section } from "@/components/site/blocks";
 import { FAQ_GROUPS } from "@/content/site";
+import { faqJsonLd, JsonLd } from "@/components/site/json-ld";
 import { pageMetadata } from "@/resources/seo";
 
 export const metadata = pageMetadata({
@@ -12,6 +13,7 @@ export const metadata = pageMetadata({
 export default function FaqPage() {
   return (
     <>
+      <JsonLd data={faqJsonLd()} />
       <PageHero
         eyebrow="FAQ"
         title="Questions, answered"
