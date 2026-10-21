@@ -127,3 +127,11 @@ body > main {
     padding-block: 13px;
   }
 }
+
+/* Founder page: keep the photo and highlights in view beside the long bio on desktop. */
+@media (min-width: 1025px) {
+  .founder-aside {
+    position: sticky;
+    top: 104px;
+  }
+}

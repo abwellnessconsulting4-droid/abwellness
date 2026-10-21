@@ -1,9 +1,9 @@
 import { OG_SIZE, renderOgImage } from "@/lib/og-image";
 
-export const alt = "Angelica Berrios, Founder & Principal Consultant | AB Wellness Consulting";
+export const alt = "Angelica Berrios, MSW, Founder & Principal Consultant | AB Wellness Consulting";
 export const size = OG_SIZE;
 export const contentType = "image/png";
 
 export default function Image() {
-  return renderOgImage({ eyebrow: "Our founder", title: "Angelica Berrios, Founder & Principal Consultant" });
+  return renderOgImage({ eyebrow: "Our founder", title: "Angelica Berrios, MSW, Founder & Principal Consultant" });
 }

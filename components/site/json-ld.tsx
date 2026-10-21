@@ -59,8 +59,18 @@ export function founderJsonLd(): JsonLdData {
     mainEntity: {
       "@type": "Person",
       name: FOUNDER.name,
+      honorificSuffix: FOUNDER.postNominal,
       jobTitle: FOUNDER.title,
+      description: FOUNDER.summary[0],
       worksFor: { "@id": ORGANIZATION_ID },
+      alumniOf: { "@type": "CollegeOrUniversity", name: FOUNDER.alumniOf },
+      hasCredential: {
+        "@type": "EducationalOccupationalCredential",
+        credentialCategory: "degree",
+        name: "Master of Social Work",
+      },
+      knowsLanguage: FOUNDER.languages,
+      knowsAbout: FOUNDER.specialties,
     },
   };
 }

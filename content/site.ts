@@ -372,17 +372,48 @@ export const RESOURCE_COLLECTIONS: Feature[] = [
 export const FOUNDER = {
   name: "Angelica Berrios",
   firstName: "Angelica",
+  postNominal: "MSW",
   title: "Founder & Principal Consultant",
-  credentials: "[Degrees, licenses, and certifications]",
-  bio: [
-    "Angelica Berrios founded AB Wellness Consulting after [number] years of [field / experience], helping people [what that work involved]. [Replace with Angelica's story in Angelica's own words.]",
-    "[What led Angelica to start the company, and the gap Angelica saw in how people were being supported.]",
-    "[Angelica's approach in practice: how sessions work, and what clients can expect.]",
+  credentials: "Master of Social Work (MSW), Yeshiva University",
+  alumniOf: "Yeshiva University",
+  languages: ["English", "Spanish"],
+  specialties: [
+    "Social Work",
+    "Behavioral Health",
+    "Housing Services",
+    "Staff Development",
+    "Clinical and Program Consultation",
   ],
-  quote: "[A short quote from Angelica about why this work matters.]",
+  /** Short introduction for the About and home pages. */
+  summary: [
+    "Angelica Berrios is a dedicated social services professional with over 20 years of experience in social work, behavioral health, mental health services, substance use support, housing services, case management, and community-based care coordination.",
+    "She has worked with individuals and families from diverse backgrounds, including people experiencing homelessness, housing instability, mental health challenges, substance use disorders, and other complex psychosocial needs. Today she also supports organizations through staff training, program development, and professional consultation.",
+  ],
+  /** Full biography for the founder page (client-provided). */
+  bio: [
+    "Angelica Berrios is a dedicated social services professional with over 20 years of experience in social work, behavioral health, mental health services, substance use support, housing services, case management, and community-based care coordination. She holds a Master of Social Work (MSW) degree from Yeshiva University and brings extensive experience in program leadership, client advocacy, staff development, service coordination, professional consultation, and administrative operations.",
+    "Throughout her career, Angelica has worked with individuals and families from diverse backgrounds, including people experiencing homelessness, housing instability, mental health challenges, substance use disorders, and other complex psychosocial needs. Her extensive housing experience includes supportive housing, transitional housing, housing stabilization, service planning, resource coordination, and collaboration with community-based organizations and multidisciplinary professionals to promote housing stability, independence, and improved quality of life.",
+    "Angelica has experience supporting staff and clients through training, education, and skill development informed by Applied Behavior Analysis (ABA) and Cognitive Behavioral Therapy (CBT) approaches. Her work emphasizes the development of practical skills, behavioral awareness, emotional regulation, positive coping strategies, and constructive responses to challenging situations. She recognizes the importance of individualized support, consistent implementation of appropriate strategies, and collaboration among staff, clients, and service providers to promote meaningful outcomes. The use of these approaches is guided by individual needs, professional scope of practice, and applicable clinical oversight.",
+    "In addition to her direct service experience, Angelica brings a strong background in staff training, supervisory leadership, program development, policy and procedure implementation, quality assurance, regulatory compliance, and operational management. She supports professional development by helping staff strengthen communication, documentation, service delivery, accountability, and adherence to organizational standards. Her leadership approach emphasizes professional integrity, collaborative problem-solving, trauma-informed practices, and the development of effective, person-centered services.",
+    "Angelica also provides professional consultation informed by her extensive experience in social services, housing programs, behavioral health, and organizational operations. Her areas of professional expertise include program improvement, housing service coordination, staff performance development, workflow enhancement, compliance practices, resource navigation, and the implementation of procedures that support effective and consistent service delivery. She is committed to helping organizations identify service gaps, strengthen operational practices, and improve the quality of support provided to the populations they serve.",
+    "As a bilingual professional fluent in English and Spanish, Angelica values culturally responsive communication and recognizes the importance of building trusting relationships with individuals, families, staff, and community partners. Her practice philosophy is grounded in dignity, confidentiality, ethical responsibility, advocacy, and respect for the unique experiences and strengths of every individual.",
+    "With a Master of Social Work degree from Yeshiva University and more than two decades of experience across social work, housing, and behavioral health services, Angelica remains committed to professional growth and the advancement of evidence-informed, recovery-oriented, and person-centered approaches. Her professional interests include trauma-informed care, motivational interviewing, behavioral health education, psychosocial rehabilitation, staff development, and the integration of appropriate ABA- and CBT-informed strategies into service environments.",
+    "Angelica's combination of extensive field experience, housing expertise, leadership capabilities, training experience, and professional consultation reflects her commitment to strengthening human services and promoting positive outcomes for individuals, organizations, and communities.",
+  ],
+  mission:
+    "To contribute to environments where individuals are treated with dignity, staff are equipped with the knowledge and skills necessary to perform effectively, and organizations are supported in delivering ethical, responsive, and high-quality services.",
   highlights: [
-    "[Years of experience]",
-    "[Specialty or focus area]",
-    "[Community involvement or affiliations]",
+    "20+ years in social work, behavioral health, and housing services",
+    "Master of Social Work (MSW), Yeshiva University",
+    "Bilingual: English and Spanish",
+    "Trauma-informed, person-centered practice",
+  ],
+  expertise: [
+    "Program improvement",
+    "Housing service coordination",
+    "Staff performance development",
+    "Workflow enhancement",
+    "Compliance practices",
+    "Resource navigation",
   ],
 };

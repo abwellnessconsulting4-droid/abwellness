@@ -189,10 +189,10 @@ export default function Home() {
               Meet the founder
             </Text>
             <Heading as="h2" id="founder-title" variant="display-strong-xs">
-              {FOUNDER.name}
+              {FOUNDER.name}, {FOUNDER.postNominal}
             </Heading>
             <Text variant="body-default-m" onBackground="neutral-medium">
-              {FOUNDER.bio[0]}
+              {FOUNDER.summary[0]}
             </Text>
             <Row>
               <Button href="/founder" variant="tertiary" label={`Read ${FOUNDER.firstName}'s story`} suffixIcon="arrowRight" />

@@ -1,4 +1,4 @@
-import { Column, Heading, Icon, Row, Text } from "@once-ui-system/core";
+import { Column, Heading, Icon, Row, Tag, Text } from "@once-ui-system/core";
 import { CtaBand, PageHero, Section } from "@/components/site/blocks";
 import { FOUNDER } from "@/content/site";
 import { SITE_NAME } from "@/lib/constants";
@@ -6,8 +6,8 @@ import { founderJsonLd, JsonLd } from "@/components/site/json-ld";
 import { pageMetadata } from "@/resources/seo";
 
 export const metadata = pageMetadata({
-  title: `${FOUNDER.name}, Founder`,
-  description: `Meet ${FOUNDER.name}, founder and principal consultant of ${SITE_NAME}.`,
+  title: `${FOUNDER.name}, ${FOUNDER.postNominal}, Founder`,
+  description: `${FOUNDER.name}, ${FOUNDER.postNominal}, founder of ${SITE_NAME}, brings 20+ years in social work, behavioral health, and housing services, plus staff development and program consultation.`,
   path: "/founder",
 });
 
@@ -15,11 +15,15 @@ export default function FounderPage() {
   return (
     <>
       <JsonLd data={founderJsonLd()} />
-      <PageHero eyebrow="Our founder" title={FOUNDER.name} description={`${FOUNDER.title}, ${SITE_NAME}`} />
+      <PageHero
+        eyebrow="Our founder"
+        title={`${FOUNDER.name}, ${FOUNDER.postNominal}`}
+        description={`${FOUNDER.title}, ${SITE_NAME}. ${FOUNDER.specialties.join(" · ")}`}
+      />
 
       <Section id="story" align="start">
         <Row fillWidth gap="48" vertical="start" m={{ direction: "column", gap: "32" }}>
-          <Column flex={2} gap="20" horizontal="center" fillWidth>
+          <Column flex={2} gap="20" horizontal="center" fillWidth className="founder-aside">
             {/* Replace with a professional photo: public/images/founder.jpg */}
             <Column
               fillWidth
@@ -57,23 +61,30 @@ export default function FounderPage() {
                 {paragraph}
               </Text>
             ))}
-            <Text variant="body-default-s" onBackground="neutral-weak">
-              Credentials: {FOUNDER.credentials}
-            </Text>
+            <Column gap="12" paddingTop="8">
+              <Heading as="h3" variant="heading-strong-m">
+                Areas of expertise
+              </Heading>
+              <Row as="ul" gap="8" wrap className="list-none p-0 m-0">
+                {FOUNDER.expertise.map((item) => (
+                  <li key={item}>
+                    <Tag size="m" variant="neutral" label={item} />
+                  </li>
+                ))}
+              </Row>
+            </Column>
             <Column
-              as="blockquote"
               gap="12"
-              paddingLeft="24"
-              paddingY="8"
-              borderLeft="accent-medium"
-              borderWidth={2}
-              className="m-0"
+              padding="24"
+              radius="l"
+              background="brand-alpha-weak"
+              border="brand-alpha-medium"
             >
-              <Text variant="heading-default-l" className="font-heading">
-                &ldquo;{FOUNDER.quote}&rdquo;
+              <Text variant="label-default-s" onBackground="accent-medium">
+                Mission
               </Text>
-              <Text variant="label-default-s" onBackground="neutral-medium">
-                {FOUNDER.name}
+              <Text variant="heading-default-l" className="font-heading">
+                {FOUNDER.mission}
               </Text>
             </Column>
           </Column>
