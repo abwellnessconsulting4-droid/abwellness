@@ -50,7 +50,7 @@ export default function ApproachPage() {
       </Section>
 
       <Section id="principles" eyebrow="Our principles" title="What you can count on">
-        <FeatureGrid items={PRINCIPLES} columns={4} />
+        <FeatureGrid items={PRINCIPLES} />
       </Section>
 
       <CtaBand title="Start with a conversation" />

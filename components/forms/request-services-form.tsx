@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Checkbox, Column, Grid, Input, Row, Select, Text, Textarea } from "@once-ui-system/core";
 import { PreviewForm } from "@/components/forms/preview-form";
-import { SERVICES } from "@/content/site";
+import { SERVICE_TRACKS } from "@/content/site";
 
 const REQUEST_FOR = [
   { value: "self", label: "Myself" },
@@ -64,21 +64,28 @@ export function RequestServicesForm() {
         <Input id="request-organization" name="organization" label="Organization name" autoComplete="organization" required />
       )}
 
-      <Column as="fieldset" gap="12" paddingY="8" className="border-0 p-0 m-0">
-        <Text as="legend" variant="label-strong-s" onBackground="neutral-strong">
+      <Column gap="16" paddingY="8">
+        <Text variant="label-strong-s" onBackground="neutral-strong">
           Services you&apos;re interested in
         </Text>
-        <Grid columns="2" gap="8" s={{ columns: 1 }}>
-          {SERVICES.map((service) => (
-            <Checkbox
-              className="checkbox-row"
-              key={service.title}
-              label={service.title}
-              isChecked={services.includes(service.title)}
-              onToggle={() => toggleService(service.title)}
-            />
-          ))}
-        </Grid>
+        {SERVICE_TRACKS.map((track) => (
+          <Column key={track.id} as="fieldset" gap="8" className="border-0 p-0 m-0">
+            <Text as="legend" variant="label-default-s" onBackground="accent-medium">
+              {track.title}
+            </Text>
+            <Grid columns="2" gap="8" s={{ columns: 1 }}>
+              {track.services.map((service) => (
+                <Checkbox
+                  className="checkbox-row"
+                  key={service.title}
+                  label={service.title}
+                  isChecked={services.includes(service.title)}
+                  onToggle={() => toggleService(service.title)}
+                />
+              ))}
+            </Grid>
+          </Column>
+        ))}
       </Column>
 
       <Textarea

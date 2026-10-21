@@ -8,6 +8,7 @@ const ROWS: { icon: IconName; label: string; value: string; href?: string }[] = 
   { icon: "phone", label: "Phone", value: CONTACT_DETAILS.phone },
   { icon: "mapPin", label: "Office", value: CONTACT_DETAILS.address },
   { icon: "clock", label: "Hours", value: CONTACT_DETAILS.hours },
+  { icon: "chat", label: "Languages", value: "English and Spanish" },
 ];
 
 export function ContactDetails() {

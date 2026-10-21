@@ -6,12 +6,13 @@ import {
   Column,
   Grid,
   Heading,
+  Icon,
   Row,
   Text,
 } from "@once-ui-system/core";
 import { CtaBand, FeatureCard, FeatureGrid, Section } from "@/components/site/blocks";
 import { ComingSoon } from "@/components/ui/coming-soon";
-import { APPROACH_STEPS, AUDIENCES, FOUNDER, PROGRAMS, SERVICES } from "@/content/site";
+import { APPROACH_STEPS, AUDIENCES, CREDENTIALS, FOUNDER, PROGRAMS, SERVICE_TRACKS } from "@/content/site";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE } from "@/lib/constants";
 import { getSiteMode } from "@/lib/site-mode";
 
@@ -78,12 +79,23 @@ export default function Home() {
               Wellness consulting, designed for lasting growth.
             </Heading>
             <Text variant="body-default-l" onBackground="neutral-medium">
-              {SITE_NAME} partners with people and organizations who want clearer routines,
-              calmer decision-making, and support that lasts beyond a single season.
+              {SITE_NAME} helps individuals and families find stable housing, connect with the
+              right resources, and build practical skills, and helps the organizations that serve
+              them strengthen their staff and programs.
             </Text>
             <Row gap="12" wrap className="home-hero__actions">
               <Button href="/request-services" variant="primary" size="l" label="Request services" suffixIcon="arrowRight" />
-              <Button href="/approach" variant="secondary" size="l" label="How we work" />
+              <Button href="/services" variant="secondary" size="l" label="Explore services" />
+            </Row>
+            <Row as="ul" gap="8" wrap aria-label="About AB Wellness" className="home-hero__actions list-none p-0 m-0">
+              {CREDENTIALS.map((item) => (
+                <Row as="li" key={item} gap="8" vertical="center">
+                  <Icon name="checkCircle" size="s" onBackground="accent-medium" decorative />
+                  <Text variant="label-default-s" onBackground="neutral-strong">
+                    {item}
+                  </Text>
+                </Row>
+              ))}
             </Row>
           </Column>
           <Column flex={2} horizontal="center">
@@ -111,9 +123,19 @@ export default function Home() {
         id="services"
         eyebrow="Services"
         title="Practical help, delivered with care"
-        description="From one-on-one coaching to coordinating the services you rely on, we meet you where you are."
+        description="Support for individuals and families, and training and consultation for the organizations that serve them."
       >
-        <FeatureGrid items={SERVICES.slice(0, 3)} />
+        <Grid columns="2" gap="16" s={{ columns: 1 }}>
+          {SERVICE_TRACKS.map((track) => (
+            <FeatureCard
+              key={track.id}
+              icon={track.icon}
+              title={track.title}
+              description={track.description}
+              points={track.services.map((service) => service.title)}
+            />
+          ))}
+        </Grid>
         <Row horizontal="center">
           <Button href="/services" variant="secondary" label="See all services" suffixIcon="arrowRight" />
         </Row>

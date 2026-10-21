@@ -4,7 +4,7 @@ export const SITE_NAME = "AB Wellness Consulting";
 export const SITE_LEGAL_NAME = "AB Wellness Consulting Inc.";
 export const SITE_TAGLINE = "Solutions for growth. Support for life.";
 export const SITE_DESCRIPTION =
-  "AB Wellness Consulting helps individuals and organizations build sustainable wellness practices with guidance that is calm, personal, and grounded in long-term growth.";
+  "Bilingual (English and Spanish) social services consulting: housing stabilization, resource navigation, and skill-building for individuals and families, plus staff training and program consultation for organizations. Led by Angelica Berrios, MSW.";
 export const CONTACT_EMAIL = "hello@abwellnessconsulting.com";
 
 /** Launch date: December 1, 2026, 9:00 AM Eastern (EST, UTC-5). */

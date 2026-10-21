@@ -71,69 +71,123 @@ export interface Feature {
   href?: string;
 }
 
+/** Credibility facts shown on the home page and elsewhere. */
+export const CREDENTIALS = [
+  "20+ years in social work, behavioral health & housing",
+  "Led by Angelica Berrios, MSW",
+  "Services in English & Spanish",
+];
+
+export const LANGUAGES_NOTE = "Services available in English and Spanish.";
+
 export const AUDIENCES: Feature[] = [
   {
     icon: "heart",
     title: "Individuals",
     description:
-      "Adults who want steadier routines, a clear plan, and someone in their corner while they make changes that last.",
+      "Adults facing housing instability or homelessness, mental health challenges, substance use, or other complex needs who want practical support and a clear plan.",
   },
   {
     icon: "people",
     title: "Families & caregivers",
     description:
-      "Families supporting a loved one who need guidance, coordination, and room to take care of themselves too.",
+      "Families and support networks helping a loved one, who need guidance, coordination with providers, and room to care for themselves too.",
   },
   {
     icon: "building",
     title: "Organizations",
     description:
-      "Employers, nonprofits, and community partners building healthier teams and programs for the people they serve.",
+      "Supportive housing providers, behavioral health agencies, and community-based organizations strengthening their staff, programs, and operations.",
   },
 ];
 
-export const SERVICES: Feature[] = [
+/** Services for people and families. */
+export const INDIVIDUAL_SERVICES: Feature[] = [
   {
-    icon: "sparkles",
-    title: "Individual wellness coaching",
+    icon: "home",
+    title: "Housing stabilization support",
     description:
-      "One-on-one sessions to set meaningful goals, build daily routines, and manage stress with practical tools.",
-    points: ["Personal wellness plan", "Goal-setting and check-ins", "Stress and routine management"],
+      "Guidance through housing searches, applications, and the steps that help keep a home stable, including supportive and transitional housing.",
+    points: ["Housing readiness and service planning", "Application and document support", "Ongoing stability check-ins"],
   },
   {
     icon: "chat",
-    title: "Care coordination & navigation",
+    title: "Resource navigation & care coordination",
     description:
-      "Help finding, connecting with, and keeping track of the healthcare, benefits, and community services you need.",
-    points: ["Referrals and warm hand-offs", "Appointment and paperwork support", "Benefits navigation"],
-  },
-  {
-    icon: "home",
-    title: "Housing stability support",
-    description:
-      "Guidance through housing searches, applications, documentation, and the steps that keep a home stable.",
-    points: ["Application and document prep", "Landlord communication support", "Move-in and stability planning"],
+      "Help finding and connecting with the healthcare, behavioral health, benefits, and community services you need, and keeping them working together.",
+    points: ["Referrals and warm hand-offs", "Coordination with your providers", "Benefits and resource navigation"],
   },
   {
     icon: "checkCircle",
-    title: "Life skills & independent living",
+    title: "Case management support",
     description:
-      "Hands-on support with the everyday skills that make independence feel achievable and sustainable.",
-    points: ["Budgeting and money basics", "Scheduling and organization", "Healthy daily habits"],
+      "A consistent point of contact who helps you set goals, track progress, and stay on top of appointments and paperwork.",
+    points: ["Individual service plan", "Goal tracking and follow-up", "Advocacy alongside you"],
+  },
+  {
+    icon: "sparkles",
+    title: "Skill-building & coping strategies",
+    description:
+      "Practical, CBT- and ABA-informed skill development for everyday life: coping strategies, emotional regulation, and constructive responses to challenges.",
+    points: ["Coping and stress strategies", "Daily living and organization skills", "Building healthy routines"],
   },
   {
     icon: "users",
     title: "Family & caregiver support",
     description:
-      "Guidance for the people who support someone else, so the whole household can move forward together.",
-    points: ["Caregiver planning sessions", "Communication strategies", "Respite and resource referrals"],
+      "Guidance for the people supporting someone else, so the whole household can move forward together.",
+    points: ["Caregiver planning", "Communication strategies", "Respite and resource referrals"],
+  },
+];
+
+/** Services for organizations. */
+export const ORGANIZATION_SERVICES: Feature[] = [
+  {
+    icon: "people",
+    title: "Staff training & development",
+    description:
+      "Training that helps frontline staff strengthen communication, documentation, service delivery, and trauma-informed, person-centered practice.",
+    points: ["Trauma-informed care", "Motivational interviewing", "ABA- and CBT-informed strategies"],
+  },
+  {
+    icon: "shield",
+    title: "Supervisory & leadership support",
+    description:
+      "Coaching and tools for supervisors to build accountability, support their teams, and lead with integrity.",
+    points: ["Supervisory skill-building", "Staff performance development", "Collaborative problem-solving"],
   },
   {
     icon: "building",
-    title: "Organizational wellness consulting",
+    title: "Program development & consultation",
     description:
-      "Workshops and program design that help organizations support the wellbeing of their teams and communities.",
-    points: ["Staff wellness workshops", "Program design and evaluation", "Community partnerships"],
+      "Consultation to identify service gaps, design or improve programs, and raise the quality of support your organization provides.",
+    points: ["Program assessment", "Housing service coordination", "Service improvement plans"],
+  },
+  {
+    icon: "checkCircle",
+    title: "Compliance & operations",
+    description:
+      "Help putting effective policies, procedures, and workflows in place so services are consistent, compliant, and sustainable.",
+    points: ["Policy and procedure implementation", "Quality assurance practices", "Workflow enhancement"],
+  },
+];
+
+export const SERVICES: Feature[] = [...INDIVIDUAL_SERVICES, ...ORGANIZATION_SERVICES];
+
+export const SERVICE_TRACKS = [
+  {
+    id: "individuals",
+    title: "For individuals & families",
+    description: "Practical, person-centered support for housing, resources, and everyday skills.",
+    icon: "heart" as IconName,
+    services: INDIVIDUAL_SERVICES,
+  },
+  {
+    id: "organizations",
+    title: "For organizations",
+    description: "Training, consultation, and operational support for organizations that serve their communities.",
+    icon: "building" as IconName,
+    services: ORGANIZATION_SERVICES,
   },
 ];
 
@@ -150,38 +204,53 @@ export const PROGRAMS: Program[] = [
   {
     name: "Foundations",
     summary:
-      "A structured start for anyone ready to build steadier routines and a plan they believe in.",
-    audience: "Individuals beginning their wellness journey",
+      "A structured start for building practical skills, positive coping strategies, and steadier daily routines.",
+    audience: "Individuals ready to build skills and a plan they believe in",
     format: "One-on-one, in person or virtual [confirm]",
     duration: "8 weeks [confirm]",
-    includes: ["Intake and wellness assessment", "Personal wellness plan", "Weekly coaching sessions", "Progress review"],
+    includes: [
+      "Intake and individualized service plan",
+      "Coping and emotional regulation skills",
+      "Daily living and organization skills",
+      "Progress review",
+    ],
   },
   {
     name: "Stable Ground",
     summary:
-      "Focused support for finding and keeping stable housing, from paperwork to move-in and beyond.",
-    audience: "Individuals and families facing housing transitions",
+      "Focused housing stabilization support, from paperwork and applications to move-in and keeping a home.",
+    audience: "Individuals and families facing housing instability or transitions",
     format: "One-on-one with care coordination",
     duration: "12 weeks [confirm]",
-    includes: ["Housing readiness plan", "Document and application support", "Landlord and agency coordination", "Stability check-ins"],
+    includes: [
+      "Housing readiness and service plan",
+      "Document and application support",
+      "Coordination with housing providers and agencies",
+      "Stability check-ins",
+    ],
   },
   {
     name: "Thrive Together",
     summary:
       "Small-group workshops that build practical skills and a sense of community along the way.",
     audience: "Adults who learn best alongside others",
-    format: "Small groups [confirm size]",
+    format: "Small groups, English or Spanish [confirm]",
     duration: "6 sessions [confirm]",
-    includes: ["Life skills workshops", "Peer connection", "Take-home tools and worksheets"],
+    includes: ["Coping and life skills workshops", "Peer connection", "Take-home tools and worksheets"],
   },
   {
-    name: "Workplace Wellness",
+    name: "Staff Development Series",
     summary:
-      "Tailored workshops and program design for organizations investing in their people.",
-    audience: "Employers, nonprofits, and community organizations",
-    format: "On-site or virtual sessions",
+      "Training for frontline and supervisory staff in human services, housing, and behavioral health settings.",
+    audience: "Supportive housing, behavioral health, and community organizations",
+    format: "On-site or virtual training sessions",
     duration: "Custom engagements",
-    includes: ["Needs assessment", "Custom workshop series", "Program recommendations", "Outcome summary"],
+    includes: [
+      "Trauma-informed, person-centered practice",
+      "Documentation and service delivery",
+      "ABA- and CBT-informed strategies",
+      "Supervisory and leadership skills",
+    ],
   },
 ];
 
@@ -215,19 +284,30 @@ export const APPROACH_STEPS: { title: string; description: string }[] = [
 
 export const PRINCIPLES: Feature[] = [
   {
+    icon: "shield",
+    title: "Trauma-informed",
+    description: "We recognize the impact of trauma and build safety, trust, and choice into every interaction.",
+  },
+  {
     icon: "heart",
     title: "Person-centered",
-    description: "Your goals lead. We listen first and build every plan around what matters to you.",
+    description: "Your goals lead. We listen first and build every plan around your needs and strengths.",
   },
   {
     icon: "sparkles",
-    title: "Strengths-based",
-    description: "We start from what's already working and build on it, rather than focusing only on problems.",
+    title: "Recovery-oriented",
+    description: "We believe in growth and support each person's path toward independence and wellbeing.",
+  },
+  {
+    icon: "book",
+    title: "Evidence-informed",
+    description:
+      "We draw on proven approaches, including motivational interviewing and CBT- and ABA-informed strategies, within professional scope of practice.",
   },
   {
     icon: "people",
-    title: "Culturally responsive",
-    description: "We respect each person's background, identity, and lived experience, and we adapt to them.",
+    title: "Culturally responsive & bilingual",
+    description: "We respect each person's background and lived experience, and we work in English and Spanish.",
   },
   {
     icon: "lock",
@@ -237,10 +317,10 @@ export const PRINCIPLES: Feature[] = [
 ];
 
 export const VALUES: Feature[] = [
-  { icon: "heart", title: "Compassion", description: "Calm, patient support without judgment." },
-  { icon: "shield", title: "Integrity", description: "Honest guidance and clear expectations." },
-  { icon: "sparkles", title: "Growth", description: "Progress that builds on itself over time." },
-  { icon: "people", title: "Community", description: "Nobody should have to navigate alone." },
+  { icon: "heart", title: "Dignity & respect", description: "Every person is treated with dignity, and their experiences and strengths are respected." },
+  { icon: "lock", title: "Confidentiality", description: "Trust starts with protecting the information people share with us." },
+  { icon: "shield", title: "Ethical responsibility", description: "Honest guidance, clear expectations, and practice within professional standards." },
+  { icon: "chat", title: "Advocacy", description: "We stand alongside the people we serve and help their voices be heard." },
 ];
 
 export const APPOINTMENT_TYPES: { name: string; duration: string; description: string; icon: IconName }[] = [
@@ -271,7 +351,16 @@ export const FAQ_GROUPS: { title: string; items: { question: string; answer: str
       {
         question: "Who do you work with?",
         answer:
-          "We work with adults, families and caregivers, and organizations. If you're not sure we're the right fit, request an introductory call and we'll talk it through.",
+          "We work with adults and families, including people facing housing instability, mental health challenges, or substance use, and with organizations such as supportive housing providers, behavioral health agencies, and community-based programs. If you're not sure we're the right fit, request an introductory call and we'll talk it through.",
+      },
+      {
+        question: "Do you offer services in Spanish?",
+        answer: "Yes. Services are available in English and Spanish. Sí, ofrecemos servicios en español.",
+      },
+      {
+        question: "Do you work with organizations?",
+        answer:
+          "Yes. We provide staff training and development, supervisory support, program development and consultation, and help with policies, procedures, and compliance practices. Request an organizational discovery call to talk about your needs.",
       },
       {
         question: "How do I get started?",
@@ -295,6 +384,11 @@ export const FAQ_GROUPS: { title: string; items: { question: string; answer: str
       {
         question: "Where do you provide services?",
         answer: "[Service area.] Virtual sessions may be available outside this area. Contact us to confirm.",
+      },
+      {
+        question: "Do you provide therapy or clinical treatment?",
+        answer:
+          "No. We provide practical support, case management, skill-building, and consultation. We are not a substitute for therapy, medical care, or substance use treatment, and we can help connect you with licensed providers. [Confirm with Angelica.]",
       },
       {
         question: "How long do programs last?",
