@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Column, Heading, Icon, Row, Tag, Text } from "@once-ui-system/core";
 import { CtaBand, PageHero, Section } from "@/components/site/blocks";
 import { FOUNDER } from "@/content/site";
@@ -24,23 +25,23 @@ export default function FounderPage() {
       <Section id="story" align="start">
         <Row fillWidth gap="48" vertical="start" m={{ direction: "column", gap: "32" }}>
           <Column flex={2} gap="20" horizontal="center" fillWidth className="founder-aside">
-            {/* Replace with a professional photo: public/images/founder.jpg */}
             <Column
               fillWidth
               aspectRatio="4 / 5"
               radius="xl"
-              center
-              gap="12"
-              background="surface"
+              overflow="hidden"
+              position="relative"
               border="accent-alpha-medium"
               maxWidth={24}
             >
-              <Text variant="display-strong-l" onBackground="accent-medium" className="monogram monogram--l" aria-hidden>
-                AB
-              </Text>
-              <Text variant="label-default-s" onBackground="neutral-weak">
-                [Founder photo]
-              </Text>
+              <Image
+                src={FOUNDER.photo}
+                alt={`Portrait of ${FOUNDER.name}`}
+                fill
+                priority
+                sizes="(max-width: 1024px) 384px, 384px"
+                className="founder-photo"
+              />
             </Column>
             <Column as="ul" gap="12" fillWidth className="list-none p-0 m-0">
               {FOUNDER.highlights.map((item) => (

@@ -174,15 +174,18 @@ export default function Home() {
             width="160"
             height="160"
             radius="full"
-            center
-            background="brand-alpha-weak"
+            overflow="hidden"
+            position="relative"
             border="accent-alpha-medium"
             style={{ flexShrink: 0 }}
-            aria-hidden
           >
-            <Text variant="display-strong-m" onBackground="accent-medium" className="monogram monogram--m">
-              AB
-            </Text>
+            <Image
+              src={FOUNDER.photo}
+              alt={`Portrait of ${FOUNDER.name}`}
+              fill
+              sizes="160px"
+              className="founder-photo"
+            />
           </Row>
           <Column gap="16">
             <Text variant="label-default-s" onBackground="accent-medium">

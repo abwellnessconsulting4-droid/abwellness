@@ -60,6 +60,7 @@ export function founderJsonLd(): JsonLdData {
       "@type": "Person",
       name: FOUNDER.name,
       honorificSuffix: FOUNDER.postNominal,
+      image: `${baseURL}${FOUNDER.photo}`,
       jobTitle: FOUNDER.title,
       description: FOUNDER.summary[0],
       worksFor: { "@id": ORGANIZATION_ID },

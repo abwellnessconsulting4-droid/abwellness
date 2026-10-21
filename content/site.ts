@@ -373,6 +373,7 @@ export const FOUNDER = {
   name: "Angelica Berrios",
   firstName: "Angelica",
   postNominal: "MSW",
+  photo: "/images/angelica-berrios.jpg",
   title: "Founder & Principal Consultant",
   credentials: "Master of Social Work (MSW), Yeshiva University",
   alumniOf: "Yeshiva University",
