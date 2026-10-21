@@ -3,6 +3,7 @@ import { Column, Line } from "@once-ui-system/core";
 import { FooterNav } from "@/components/site/footer-nav";
 import { PreviewBanner } from "@/components/site/preview-banner";
 import { SiteHeader } from "@/components/site/site-header";
+import { UtilityBar } from "@/components/site/utility-bar";
 import { SiteFooter } from "@/components/ui/site-footer";
 import { getSiteMode } from "@/lib/site-mode";
 
@@ -30,6 +31,7 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
         Skip to main content
       </a>
       {mode === "preview" && <PreviewBanner />}
+      <UtilityBar />
       <SiteHeader />
       <Column as="main" id="main-content" fillWidth flex={1} tabIndex={-1}>
         {children}

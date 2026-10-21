@@ -17,7 +17,7 @@ export function LegalPage({ document }: { document: LegalDocument }) {
             Effective: {document.effectiveDate}
           </Text>
           {document.sections.map((section) => (
-            <Column as="section" key={section.heading} gap="12">
+            <Column as="section" key={section.heading} id={section.id} gap="12" className="legal-section">
               <Heading as="h2" variant="heading-strong-l">
                 {section.heading}
               </Heading>

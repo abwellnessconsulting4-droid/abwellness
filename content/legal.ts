@@ -5,6 +5,8 @@
 import { CONTACT_EMAIL, SITE_LEGAL_NAME, SITE_NAME } from "@/lib/constants";
 
 export interface LegalSection {
+  /** Anchor for deep links, e.g. /accessibility#translation. */
+  id?: string;
   heading: string;
   paragraphs?: string[];
   list?: string[];
@@ -55,6 +57,12 @@ export const PRIVACY_POLICY: LegalDocument = {
       heading: "Sharing",
       paragraphs: [
         "We share information only with service providers who help us operate (for example, email delivery and secure hosting), under agreements that require them to protect it, or when required by law.",
+      ],
+    },
+    {
+      heading: "Translation",
+      paragraphs: [
+        "If you choose a language other than English from the language menu, the page loads Google Translate, which sends the page's text to Google to translate it and sets a cookie to remember your choice. Google's privacy policy applies to that service. If you don't choose a language, the translation service is never loaded.",
       ],
     },
     {
@@ -152,6 +160,13 @@ export const ACCESSIBILITY_STATEMENT: LegalDocument = {
         "Provide text alternatives for meaningful images and label every form field.",
         "Respect reduced-motion preferences set in your device.",
         "Test with automated tools and manual keyboard and screen reader checks.",
+      ],
+    },
+    {
+      id: "translation",
+      heading: "Translations",
+      paragraphs: [
+        "Our services are offered in English and Spanish. To read this website in another language, use the language menu at the top of any page. It uses Google Translate, an automatic machine-translation service, so translations may be inaccurate or incomplete. For anything important, such as fees, agreements, or privacy terms, the English version is the official one, and we're happy to talk it through with you in English or Spanish.",
       ],
     },
     {

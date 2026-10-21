@@ -39,7 +39,7 @@ export function SiteHeader() {
         gap="16"
         s={{ paddingX: "16" }}
       >
-        <Link href="/" aria-label={`${SITE_NAME} home`} className="site-header__brand">
+        <Link href="/" aria-label={`${SITE_NAME} home`} className="site-header__brand notranslate" translate="no">
           <Image
             src="/images/logo_ab.png"
             alt=""
@@ -58,7 +58,7 @@ export function SiteHeader() {
           </Column>
         </Link>
 
-        <Row as="nav" aria-label="Main" gap="4" vertical="center" m={{ hide: true }}>
+        <Row as="nav" aria-label="Main" gap="4" vertical="center" m={{ hide: true }} className="site-header__desktop">
           {MAIN_NAV.map((item) => (
             <SmartLink
               key={item.href}
@@ -71,12 +71,12 @@ export function SiteHeader() {
           ))}
         </Row>
 
-        <Row gap="8" vertical="center" m={{ hide: true }}>
+        <Row gap="8" vertical="center" m={{ hide: true }} className="site-header__desktop">
           <Button href="/login" variant="tertiary" size="s" label="Client login" />
           <Button href="/request-services" variant="primary" size="s" label="Request services" />
         </Row>
 
-        <Row hide m={{ hide: false }}>
+        <Row hide m={{ hide: false }} className="site-header__toggle">
           <IconButton
             icon={menuOpen ? "close" : "menu"}
             variant="tertiary"
@@ -92,6 +92,7 @@ export function SiteHeader() {
       {menuOpen && (
         <Column
           id="mobile-menu"
+          className="site-header__mobile-menu"
           as="nav"
           aria-label="Main"
           fillWidth
