@@ -42,6 +42,14 @@ export function sendPasswordReset(to: string, url: string) {
   );
 }
 
+export function sendInvitation(to: string, name: string, url: string) {
+  return send(
+    to,
+    `You're invited to ${SITE_NAME}`,
+    `Hi ${name},\n\nAn administrator created a staff account for you. Use this link to set your password (valid for 24 hours):\n${url}\n\nAfter that you'll set up two-step verification. If you weren't expecting this, you can ignore this email.`,
+  );
+}
+
 export function sendEmailVerification(to: string, url: string) {
   return send(to, `Confirm your email for ${SITE_NAME}`, `Confirm your email address to finish setting up your account:\n${url}`);
 }

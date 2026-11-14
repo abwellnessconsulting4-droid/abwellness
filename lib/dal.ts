@@ -48,7 +48,11 @@ export const getAuthContext = cache(async (allowMfaSetup = false): Promise<AuthC
 
   const { session, user } = result;
   const role = user.role as Role;
-  if (!ROLES.includes(role) || user.status !== "ACTIVE") throw new SessionError("inactive_account");
+  if (!ROLES.includes(role) || user.status !== "ACTIVE") {
+    // Sessions are refused at sign-in for inactive accounts (lib/auth.ts); this clears any that predate deactivation.
+    await endSession(session.token, { userId: user.id, role, sessionId: session.id }, "inactive_account");
+    throw new SessionError("inactive_account");
+  }
 
   const policy = sessionPolicyFor(role);
   const now = Date.now();

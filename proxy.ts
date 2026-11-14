@@ -5,7 +5,7 @@ import { getSiteMode } from "@/lib/site-mode";
 /** Signed-in app areas (staff dashboard, patient portal, account security). */
 const APP_PREFIXES = ["/dashboard", "/portal", "/account"];
 /** Reachable in every site mode so staff and patients can sign in before launch. */
-const AUTH_PAGES = ["/login"];
+const AUTH_PAGES = ["/login", "/forgot-password", "/reset-password"];
 
 const matches = (path: string, prefixes: string[]) => prefixes.some((p) => path === p || path.startsWith(`${p}/`));
 

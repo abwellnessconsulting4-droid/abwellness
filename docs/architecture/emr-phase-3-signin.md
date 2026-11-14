@@ -48,3 +48,20 @@ Signed-in pages carry the inactivity timeout (15 min staff, 30 min clients), `no
 ## Testing
 
 `npm test` (77 tests) covers the audit rules. The browser flows were run against a production build on a separate database for: admin (authenticator), billing and front desk (email codes), provider, and client, including wrong codes, backup-code reuse, blocked pages, CSV export, sign-out, and a 390 px phone layout.
+
+## Admin: user management (slice 2)
+
+`/dashboard/users` (SUPER_ADMIN only, also gated by the `user` permission):
+
+| Feature | Behavior |
+|---|---|
+| User list | Filter by role, status, name/email; two-step status and last sign-in for each account |
+| Invite staff | Name, email, role (provider, front desk, billing, administrator), optional credentials/NPI/specialty. Creates the account with an unusable random password and emails a **set-password link (24 h)**; the person then sets up two-step verification. Client accounts are created from the client's record instead |
+| Change role | Staff roles only (client ↔ staff conversion refused); signs the person out so new permissions apply |
+| Deactivate / reactivate | Deactivated accounts get **no session even with the right password** (refused in Better Auth's session hook) and see "This account isn't active"; existing sessions are cleared |
+| Reset two-step | For a lost phone/email: clears the second factor and backup codes; they re-enroll at next sign-in |
+| Sign out everywhere / send reset link | As named |
+
+Every action requires a reason and is audited with the fields changed. **Safeguards:** an administrator can't change their own role, status, or two-step settings (another admin must), and the last active administrator can't be demoted or deactivated.
+
+`/forgot-password` always shows the same confirmation (no account enumeration). `/reset-password` serves both resets and invitations; links are single-use, and a password change signs out other devices and is audited.

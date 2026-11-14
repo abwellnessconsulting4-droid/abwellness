@@ -12,6 +12,8 @@ const NOTICES: Record<string, { variant: "info" | "warning"; text: string }> = {
   expired: { variant: "info", text: "Your session expired. Please sign in again." },
   inactive: { variant: "warning", text: "This account isn't active. Contact the office for help." },
   signed_out: { variant: "info", text: "You've been signed out." },
+  account_ready: { variant: "info", text: "Your password is set. Sign in to finish setting up your account." },
+  password_reset: { variant: "info", text: "Your password was changed. Sign in with your new password." },
 };
 
 /** Only allow same-site relative paths as the post-login destination. */
@@ -37,6 +39,9 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
       </Column>
       {notice && <Feedback variant={notice.variant} description={notice.text} />}
       <LoginForm next={safeNext(params.next)} />
+      <Text variant="body-default-s">
+        <SmartLink href="/forgot-password">Forgot your password?</SmartLink>
+      </Text>
       <Text variant="body-default-s" onBackground="neutral-medium">
         New to AB Wellness? <SmartLink href="/request-services">Request services</SmartLink> to get started.
       </Text>

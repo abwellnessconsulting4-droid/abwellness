@@ -8,6 +8,8 @@ const MESSAGES: Record<string, string> = {
   INVALID_EMAIL_OR_PASSWORD: "That email and password don't match. Check them and try again.",
   EMAIL_NOT_VERIFIED: "Please confirm your email address first. Check your inbox for the link we sent.",
   TOO_MANY_REQUESTS: "Too many attempts. Wait a minute, then try again.",
+  // Only reachable with the right password (sessions for inactive accounts are refused in lib/auth.ts).
+  FAILED_TO_CREATE_SESSION: "This account isn't active. Contact the office for help.",
 };
 
 export function LoginForm({ next }: { next: string }) {

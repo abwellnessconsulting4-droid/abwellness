@@ -66,3 +66,15 @@ describe("Better Auth configuration", () => {
     await expect(getAuth().api.signUpEmail({ body: { email: "short@example.com", password: "tooshort", name: "S" } })).rejects.toThrow();
   });
 });
+
+describe("inactive accounts", () => {
+  it("never get a session, even with the right password", async () => {
+    await mongoose.connection.collection("user").updateOne({ email }, { $set: { status: "DEACTIVATED" } });
+    const before = await mongoose.connection.collection("session").countDocuments({});
+    await expect(getAuth().api.signInEmail({ body: { email, password } })).rejects.toThrow();
+    expect(await mongoose.connection.collection("session").countDocuments({})).toBe(before);
+    const failed = await AuditLog.findOne({ action: "LOGIN_FAILED" }).sort({ seq: -1 }).setOptions({ authz: SYS }).lean();
+    expect(failed?.metadata).toMatchObject({ code: "FAILED_TO_CREATE_SESSION" });
+    await mongoose.connection.collection("user").updateOne({ email }, { $set: { status: "ACTIVE" } });
+  });
+});

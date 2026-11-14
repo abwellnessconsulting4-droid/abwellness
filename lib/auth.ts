@@ -6,7 +6,7 @@ import { twoFactor } from "better-auth/plugins/two-factor";
 import { MongoClient } from "mongodb";
 import { recordAudit } from "@/lib/audit";
 import { SITE_NAME } from "@/lib/constants";
-import { sendEmailVerification, sendPasswordReset, sendSignInCode } from "@/lib/email/security";
+import { sendEmailVerification, sendInvitation, sendPasswordReset, sendSignInCode } from "@/lib/email/security";
 import { connectToDatabase } from "@/lib/mongodb";
 import { SESSION_POLICY } from "@/lib/rbac";
 
@@ -62,7 +62,14 @@ function createAuth() {
       maxPasswordLength: 128,
       requireEmailVerification: true,
       revokeSessionsOnPasswordReset: true,
-      sendResetPassword: async ({ user, url }) => sendPasswordReset(user.email, url),
+      // Staff invitations reuse the reset flow (redirect carries ?invite=1), so links last a working day.
+      resetPasswordTokenExpiresIn: 24 * 60 * 60,
+      sendResetPassword: async ({ user, url }) =>
+        /invite(%3D|=)1/.test(url) ? sendInvitation(user.email, user.name, url) : sendPasswordReset(user.email, url),
+      onPasswordReset: async ({ user }) => {
+        await connectToDatabase();
+        await recordAudit({ actorId: user.id, actorRole: roleOf(user) }, { action: "UPDATE", resourceType: "User", resourceId: user.id, changedFields: ["password"], metadata: { via: "reset link" } });
+      },
     },
     emailVerification: {
       sendOnSignUp: true,
@@ -157,6 +164,19 @@ function createAuth() {
           );
         }
       }),
+    },
+
+    databaseHooks: {
+      session: {
+        create: {
+          // Deactivated or suspended accounts never get a session. This runs after the password
+          // (or code) has been verified, so it reveals nothing to someone guessing.
+          before: async (session, ctx) => {
+            const user = ctx ? await ctx.context.internalAdapter.findUserById(String(session.userId)) : null;
+            if (user && (user as { status?: string }).status !== "ACTIVE") return false;
+          },
+        },
+      },
     },
 
     plugins: [
