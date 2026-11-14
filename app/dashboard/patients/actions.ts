@@ -80,6 +80,7 @@ export async function saveDraftAction(patientId: string, noteId: string, _prev: 
   }, intent === "sign" ? "Note signed and locked." : "Draft saved.");
   revalidatePath(`/dashboard/patients/${patientId}`);
   revalidatePath(`/dashboard/patients/${patientId}/notes/${noteId}`);
+  revalidatePath("/dashboard/telehealth", "layout");
   return result;
 }
 

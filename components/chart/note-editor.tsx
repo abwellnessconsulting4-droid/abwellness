@@ -142,7 +142,7 @@ export function NoteEditor({ action, mode, initial, appointments = [], sessionMi
               </Row>
             ))}
             <CodePicker kind="procedure" onPick={(code) => setLines((prev) => [...prev, { cptCode: code, modifiers: [], units: 1, minutes: sessionMinutes }].slice(0, 10))} />
-            {sessionMinutes ? <Text variant="body-default-xs" onBackground="neutral-weak">Recorded session length: {sessionMinutes} minutes.</Text> : null}
+            {sessionMinutes ? <Text variant="body-default-xs" onBackground="neutral-weak">Recorded session length: {sessionMinutes} {sessionMinutes === 1 ? "minute" : "minutes"}.</Text> : null}
             <Text variant="body-default-xs" onBackground="neutral-weak">Video visits get telehealth modifier 95 automatically on the claim unless you choose another.</Text>
           </Column>
         )}
