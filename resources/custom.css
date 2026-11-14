@@ -575,3 +575,19 @@ html.translated-rtl .site-header__mobile-menu {
   min-height: 44px;
   font-size: 14px;
 }
+
+/* ── Schedule ────────────────────────────────────────────── */
+
+.inline-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.inline-form .native-field {
+  min-width: 200px;
+}
+
+.inline-panel {
+  padding: 6px 10px;
+}

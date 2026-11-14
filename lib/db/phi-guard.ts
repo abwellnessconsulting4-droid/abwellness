@@ -1,4 +1,4 @@
-import type { Schema } from "mongoose";
+import type { ClientSession, Schema } from "mongoose";
 
 /**
  * Fail-closed guard for collections holding PHI (MongoDB has no row-level
@@ -69,14 +69,14 @@ export function phiGuard(schema: Schema) {
 }
 
 type CreatableModel = {
-  new (doc: Record<string, unknown>): { $locals: Record<string, unknown>; save(): Promise<unknown> };
+  new (doc: Record<string, unknown>): { $locals: Record<string, unknown>; save(options?: { session?: ClientSession }): Promise<unknown> };
 };
 
-/** Create and save a document under an authorization token. */
-export async function createScoped<M extends CreatableModel>(Model: M, authz: AuthzToken, data: Record<string, unknown>) {
+/** Create and save a document under an authorization token (optionally inside a transaction). */
+export async function createScoped<M extends CreatableModel>(Model: M, authz: AuthzToken, data: Record<string, unknown>, options: { session?: ClientSession } = {}) {
   const doc = new Model(data);
   doc.$locals.authz = authz;
-  await doc.save();
+  await doc.save(options.session ? { session: options.session } : undefined);
   return doc as InstanceType<M>;
 }
 
