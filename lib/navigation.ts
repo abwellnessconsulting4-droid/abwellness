@@ -16,7 +16,7 @@ export interface NavItem {
 
 export const STAFF_NAV: NavItem[] = [
   { label: "Overview", href: "/dashboard", icon: "home", ready: true },
-  { label: "Patients", href: "/dashboard/patients", icon: "users", requires: { resource: "patient", action: "read" }, ready: false },
+  { label: "Clients", href: "/dashboard/patients", icon: "users", requires: { resource: "patient", action: "read" }, ready: true },
   { label: "Schedule", href: "/dashboard/schedule", icon: "calendar", requires: { resource: "appointment", action: "read" }, ready: false },
   { label: "Telehealth", href: "/dashboard/telehealth", icon: "chat", requires: { resource: "telehealth", action: "read" }, ready: false },
   { label: "Billing & claims", href: "/dashboard/billing", icon: "building", requires: { resource: "claim", action: "read" }, ready: false },

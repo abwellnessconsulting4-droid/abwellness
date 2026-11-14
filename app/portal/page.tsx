@@ -1,6 +1,6 @@
 import { Column, Grid, Heading, Icon, Row, Text } from "@once-ui-system/core";
 import { recordAudit } from "@/lib/audit";
-import { authzToken, scopeFilter } from "@/lib/authz";
+import { authzToken, withScope } from "@/lib/authz";
 import { requireSession } from "@/lib/dal";
 import { connectToDatabase } from "@/lib/mongodb";
 import { formatDateTime, formatMoney } from "@/lib/time";
@@ -33,14 +33,14 @@ export default async function PortalHome() {
   }
 
   const [nextVisit, balances, signed, published] = await Promise.all([
-    Appointment.findOne({ ...(await scopeFilter(ctx, "appointment")), scheduledStart: { $gte: new Date() }, status: { $in: ["SCHEDULED", "CONFIRMED"] } })
+    Appointment.findOne(await withScope(ctx, "appointment", { scheduledStart: { $gte: new Date() }, status: { $in: ["SCHEDULED", "CONFIRMED"] } }))
       .sort({ scheduledStart: 1 })
       .setOptions(authz)
       .lean(),
-    Invoice.find({ ...(await scopeFilter(ctx, "invoice")), status: { $in: ["UNPAID", "PARTIAL"] }, publishedToPortal: true }, { amountDueCents: 1, amountPaidCents: 1 })
+    Invoice.find(await withScope(ctx, "invoice", { status: { $in: ["UNPAID", "PARTIAL"] }, publishedToPortal: true }), { amountDueCents: 1, amountPaidCents: 1 })
       .setOptions(authz)
       .lean(),
-    SignedConsent.find({ ...(await scopeFilter(ctx, "signedConsent")), revokedAt: null }, { consentType: 1, expiresAt: 1 }).setOptions(authz).lean(),
+    SignedConsent.find(await withScope(ctx, "signedConsent", { revokedAt: null }), { consentType: 1, expiresAt: 1 }).setOptions(authz).lean(),
     ConsentTemplate.find({ status: "PUBLISHED", type: { $in: MANDATORY_CONSENTS } }, { type: 1 }).lean(),
   ]);
 

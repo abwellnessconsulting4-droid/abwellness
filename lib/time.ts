@@ -23,3 +23,15 @@ export function formatDateTime(date: Date, timeZone = "America/New_York") {
 export function formatMoney(cents: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(cents / 100);
 }
+
+export function formatDate(date: Date, timeZone = "UTC") {
+  return new Intl.DateTimeFormat("en-US", { timeZone, dateStyle: "medium" }).format(date);
+}
+
+/** Age in whole years (dates of birth are stored as UTC midnight). */
+export function ageOn(dob: Date, at = new Date()) {
+  let age = at.getUTCFullYear() - dob.getUTCFullYear();
+  const m = at.getUTCMonth() - dob.getUTCMonth();
+  if (m < 0 || (m === 0 && at.getUTCDate() < dob.getUTCDate())) age--;
+  return age;
+}

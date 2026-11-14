@@ -131,8 +131,24 @@ export async function authorize(ctx: AuthContext, resource: Resource, action: Ac
 }
 
 /**
+ * For list views: may this role read this kind of record at all? (The list is
+ * then narrowed by withScope.) Denials are audited like authorize().
+ */
+export async function authorizeAny(ctx: AuthContext, resource: Resource, action: Action = "read") {
+  if (scopeFor(ctx.role, resource, action) !== null) return;
+  await recordAudit(ctx, {
+    action: "UNAUTHORIZED_ACCESS_ATTEMPT",
+    outcome: "DENIED",
+    resourceType: MODEL_FOR[resource] ?? resource,
+    metadata: { attempted: `${action} (list)`, reason: "no permission" },
+  });
+  throw new AuditedDenial();
+}
+
+/**
  * MongoDB filter limiting a list query to records the user may see.
- * Combine with the caller's own filter: { ...filter, ...(await scopeFilter(ctx, "claim")) }.
+ * Never spread it into another filter (a shared key like patientId would be
+ * silently overwritten); use withScope(), which combines with $and.
  */
 export async function scopeFilter(ctx: AuthContext, resource: Resource, action: Action = "read"): Promise<Record<string, unknown>> {
   const scope = scopeFor(ctx.role, resource, action);
@@ -166,4 +182,12 @@ export async function scopeFilter(ctx: AuthContext, resource: Resource, action: 
   }
   // No permission: match nothing (and callers should have used authorize() first).
   return { _id: { $in: [] } };
+}
+
+/**
+ * The caller's filter AND the user's access scope, combined with $and so neither
+ * can override the other (e.g. "this client" plus "my assigned clients").
+ */
+export async function withScope(ctx: AuthContext, resource: Resource, filter: Record<string, unknown> = {}, action: Action = "read") {
+  return { $and: [filter, await scopeFilter(ctx, resource, action)] };
 }

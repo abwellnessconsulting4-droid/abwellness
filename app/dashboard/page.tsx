@@ -1,6 +1,6 @@
 import { Column, Grid, Heading, Icon, Row, Text } from "@once-ui-system/core";
 import { verifyAuditChain } from "@/lib/audit";
-import { authzToken, scopeFilter, type AuthContext } from "@/lib/authz";
+import { authzToken, withScope, type AuthContext } from "@/lib/authz";
 import { requireSession } from "@/lib/dal";
 import { connectToDatabase } from "@/lib/mongodb";
 import { can, type Resource } from "@/lib/rbac";
@@ -21,7 +21,7 @@ interface Stat {
 const ACTIVE = ["SCHEDULED", "CONFIRMED", "CHECKED_IN", "IN_SESSION", "COMPLETED"];
 
 async function count(ctx: AuthContext, resource: Resource, model: { countDocuments: (f: object) => { setOptions: (o: object) => Promise<number> } }, filter: object) {
-  return model.countDocuments({ ...filter, ...(await scopeFilter(ctx, resource)) }).setOptions({ authz: authzToken(ctx) });
+  return model.countDocuments(await withScope(ctx, resource, filter as Record<string, unknown>)).setOptions({ authz: authzToken(ctx) });
 }
 
 async function statsFor(ctx: AuthContext): Promise<Stat[]> {
@@ -63,7 +63,7 @@ async function statsFor(ctx: AuthContext): Promise<Stat[]> {
   }
   if (can(ctx.role, "invoice", "read") && ctx.role !== "PROVIDER") {
     const [row] = await Invoice.aggregate<{ total: number }>([
-      { $match: { status: { $in: ["UNPAID", "PARTIAL"] }, ...(await scopeFilter(ctx, "invoice")) } },
+      { $match: await withScope(ctx, "invoice", { status: { $in: ["UNPAID", "PARTIAL"] } }) },
       { $group: { _id: null, total: { $sum: { $subtract: ["$amountDueCents", "$amountPaidCents"] } } } },
     ]).option({ authz: authzToken(ctx) });
     add({ label: "Patient balances open", value: formatMoney(row?.total ?? 0), hint: "Unpaid and partially paid invoices", icon: "building" });
