@@ -29,6 +29,12 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
     return cached.conn;
   }
 
+  // Already connected elsewhere (scripts, tests): reuse it.
+  if (mongoose.connection.readyState === 1) {
+    cached.conn = mongoose;
+    return cached.conn;
+  }
+
   if (!cached.promise) {
     cached.promise = mongoose.connect(uri, {
       bufferCommands: false,

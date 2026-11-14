@@ -8,7 +8,7 @@
  * Accounts share one password: SEED_PASSWORD if set, otherwise a random one
  * printed once at the end. Every account must enroll in MFA at first sign-in.
  */
-import { existsSync } from "node:fs";
+import { existsSync, writeFileSync } from "node:fs";
 import mongoose from "mongoose";
 import { assertSafeSeedTarget, UnsafeSeedTargetError } from "./seed/guard";
 
@@ -43,7 +43,36 @@ async function main() {
   }
   console.log("\nAccounts (all must enroll in MFA at first sign-in):");
   for (const user of SEED_USERS) console.log(`  ${user.role.padEnd(14)} ${user.email.padEnd(28)} ${user.name}`);
-  if (!process.env.SEED_PASSWORD) console.log(`\nShared password (shown once): ${password}`);
+  if (!process.env.SEED_PASSWORD) console.log(`\nShared password: ${password}`);
+
+  writeCredentialsFile(SEED_USERS, password, target.dbName);
+  console.log(`\nSaved sign-in details to ${CREDENTIALS_FILE} (git-ignored; never commit it).`);
+}
+
+const CREDENTIALS_FILE = "seed-accounts.local.md";
+
+/** Local, git-ignored record of the development accounts (rewritten on every seed). */
+function writeCredentialsFile(users: { role: string; email: string; name: string }[], password: string, dbName: string) {
+  const rows = users.map((u) => `| ${u.role} | ${u.email} | ${u.name} |`).join("\n");
+  const content = `# Development sign-in accounts
+
+> Local only. This file is git-ignored: never commit it or share it. These accounts exist only in
+> your development database ("${dbName}") and hold fictitious data.
+
+Seeded: ${new Date().toISOString()}
+
+**Shared password:** \`${password}\`
+
+| Role | Email | Name |
+|---|---|---|
+${rows}
+
+Every account must set up two-step login (authenticator app or emailed code) at first sign-in.
+
+To keep this password across re-seeds, set \`SEED_PASSWORD\` in \`.env.local\`, then run
+\`npm run seed:emr -- --reset\`. Without it, each seed generates a new password and rewrites this file.
+`;
+  writeFileSync(CREDENTIALS_FILE, content, { mode: 0o600 });
 }
 
 main()

@@ -11,7 +11,9 @@ npm run import:icd10 -- ./icd10cm-codes-2027.txt   # optional: full ICD-10-CM co
 
 **Safety:** the script refuses production environments, refuses remote databases unless `--allow-remote` is passed *and* the database name says dev/test/staging/sandbox/demo (and nothing says "prod"), and refuses to seed twice without `--reset`. MongoDB must run as a replica set (Atlas always does; locally, start `mongod --replSet rs0` and run `rs.initiate()` once).
 
-Needs `MONGODB_URI`, `ENCRYPTION_KEY`, and `BETTER_AUTH_SECRET`. All accounts share one password (`SEED_PASSWORD`, or a random one printed once) and must enroll in MFA at first sign-in.
+Needs `MONGODB_URI`, `ENCRYPTION_KEY`, and `BETTER_AUTH_SECRET`. All accounts share one password (`SEED_PASSWORD` from `.env.local`, or a new random one each run) and must enroll in MFA at first sign-in.
+
+**Sign-in details** are written to `seed-accounts.local.md` in the project root after every seed. The file is git-ignored (`*.local.md`) and readable only by your user; never commit or share it.
 
 ## Accounts
 

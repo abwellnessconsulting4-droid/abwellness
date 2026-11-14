@@ -6,6 +6,7 @@ import { MongoClient } from "mongodb";
 import { recordAudit } from "@/lib/audit";
 import { SITE_NAME } from "@/lib/constants";
 import { sendEmailVerification, sendPasswordReset, sendSignInCode } from "@/lib/email/security";
+import { connectToDatabase } from "@/lib/mongodb";
 import { SESSION_POLICY } from "@/lib/rbac";
 
 /**
@@ -87,6 +88,8 @@ function createAuth() {
       session: {
         create: {
           after: async (session) => {
+            // The auth route may be the first code to run in this process.
+            await connectToDatabase();
             await recordAudit(
               {
                 actorId: String(session.userId),
