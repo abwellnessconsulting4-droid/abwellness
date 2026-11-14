@@ -177,7 +177,8 @@ ClaimSchema.pre("validate", function () {
   if (from && from !== to && !CLAIM_TRANSITIONS[from].includes(to)) {
     this.invalidate("status", `Claim cannot move from ${from} to ${to}.`);
   }
-  if (this.isNew || (from && from !== to)) {
+  // Imports may supply their own history; otherwise record creation and each transition.
+  if ((this.isNew && this.statusHistory.length === 0) || (from && from !== to)) {
     this.statusHistory.push({ status: to, at: new Date() });
   }
 });

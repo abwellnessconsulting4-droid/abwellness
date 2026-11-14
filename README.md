@@ -40,7 +40,8 @@ Open [http://localhost:3000](http://localhost:3000). Waitlist signups are saved 
 The `feature/emr-core` branch adds the clinical, billing, and portal foundation (auth with MFA, RBAC, encrypted PHI fields, audit trail, 28 data models). See [docs/architecture/emr-phase-1.md](docs/architecture/emr-phase-1.md).
 
 ```bash
-npm test   # 56 tests against a throwaway MongoDB replica set
+npm test           # 75 tests against a throwaway MongoDB replica set
+npm run seed:emr   # development dataset for the six use cases (see docs/architecture/emr-seed-data.md)
 ```
 
 Local development needs `BETTER_AUTH_SECRET` and `ENCRYPTION_KEY` in `.env.local` (see `.env.example`). Use a development database only: never real patient data outside a BAA-covered production cluster.

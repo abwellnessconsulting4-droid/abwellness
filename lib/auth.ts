@@ -21,6 +21,8 @@ import { SESSION_POLICY } from "@/lib/rbac";
  * PATIENT, and staff accounts are created server-side by an admin.
  */
 
+let client: MongoClient | undefined;
+
 function createAuth() {
   const uri = process.env.MONGODB_URI;
   if (!uri) throw new Error("Missing MONGODB_URI.");
@@ -28,7 +30,7 @@ function createAuth() {
     throw new Error("Missing BETTER_AUTH_SECRET.");
   }
 
-  const client = new MongoClient(uri); // connects lazily on first use
+  client = new MongoClient(uri); // connects lazily on first use
   const isProduction = process.env.NODE_ENV === "production";
 
   return betterAuth({
@@ -121,6 +123,13 @@ let instance: Auth | undefined;
 export function getAuth(): Auth {
   instance ??= createAuth();
   return instance;
+}
+
+/** Close Better Auth's own MongoDB connection (scripts and tests; servers keep it open). */
+export async function closeAuth() {
+  await client?.close();
+  client = undefined;
+  instance = undefined;
 }
 
 export const SESSION_COOKIE_PREFIX = "abw";
