@@ -20,6 +20,9 @@ export interface AuthContext extends AuditActor {
   /** The PROVIDER's StaffProfile._id (also set for other staff with a profile). */
   staffProfileId?: string;
   mfaVerified: boolean;
+  /** For display only (header); never written to the audit log. */
+  displayName?: string;
+  email?: string;
   /** Per-request memo (assigned patient ids). */
   cache?: { assignedPatientIds?: Types.ObjectId[] };
 }

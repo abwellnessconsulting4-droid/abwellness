@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { createAuthMiddleware, getSessionFromCtx, isAPIError } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { twoFactor } from "better-auth/plugins/two-factor";
 import { MongoClient } from "mongodb";
@@ -23,6 +24,21 @@ import { SESSION_POLICY } from "@/lib/rbac";
  */
 
 let client: MongoClient | undefined;
+
+const FAILURE_AUDITED_PATHS = new Set([
+  "/sign-in/email",
+  "/two-factor/verify-totp",
+  "/two-factor/verify-otp",
+  "/two-factor/verify-backup-code",
+]);
+
+function roleOf(user: unknown) {
+  return String((user as { role?: string } | null)?.role ?? "USER");
+}
+
+function requestIp(request: Request | undefined) {
+  return request?.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request?.headers.get("x-real-ip") || undefined;
+}
 
 function createAuth() {
   const uri = process.env.MONGODB_URI;
@@ -84,25 +100,63 @@ function createAuth() {
       useSecureCookies: isProduction,
     },
 
-    databaseHooks: {
-      session: {
-        create: {
-          after: async (session) => {
-            // The auth route may be the first code to run in this process.
-            await connectToDatabase();
-            await recordAudit(
-              {
-                actorId: String(session.userId),
-                actorRole: "USER",
-                ipAddress: session.ipAddress ?? undefined,
-                userAgent: session.userAgent ?? undefined,
-                sessionId: String(session.id),
-              },
-              { action: "LOGIN", resourceType: "Session", resourceId: String(session.id) },
-            );
+    hooks: {
+      // Record sign-outs while the session still exists.
+      before: createAuthMiddleware(async (ctx) => {
+        if (ctx.path !== "/sign-out") return;
+        const current = await getSessionFromCtx(ctx);
+        if (!current) return;
+        await connectToDatabase();
+        await recordAudit(
+          {
+            actorId: current.user.id,
+            actorRole: String((current.user as { role?: string }).role ?? "USER"),
+            sessionId: current.session.id,
+            ipAddress: requestIp(ctx.request),
+            userAgent: ctx.request?.headers.get("user-agent") ?? undefined,
           },
-        },
-      },
+          { action: "LOGOUT", resourceType: "Session", resourceId: current.session.id },
+        );
+      }),
+      // Sign-in outcomes. LOGIN only once authentication fully completes (password, plus the
+      // second step when enrolled). Better Auth clears newSession while a code is pending.
+      after: createAuthMiddleware(async (ctx) => {
+        if (!FAILURE_AUDITED_PATHS.has(ctx.path)) return;
+        const returned = ctx.context.returned;
+        const actorBase = { ipAddress: requestIp(ctx.request), userAgent: ctx.request?.headers.get("user-agent") ?? undefined };
+
+        if (isAPIError(returned)) {
+          // Email never stored; the user id is recorded when the address matches an account.
+          const email = typeof ctx.body?.email === "string" ? ctx.body.email.toLowerCase() : undefined;
+          const user = email ? await ctx.context.internalAdapter.findUserByEmail(email).then((r) => r?.user) : undefined;
+          await connectToDatabase();
+          await recordAudit(
+            { ...actorBase, actorId: user?.id, actorRole: user ? roleOf(user) : "ANONYMOUS" },
+            { action: "LOGIN_FAILED", outcome: "DENIED", resourceType: "Session", metadata: { step: ctx.path, code: String(returned.body?.code ?? returned.status) } },
+          );
+          return;
+        }
+
+        // This hook can run before the two-factor plugin discards the password-step session, so
+        // decide from the account: with 2FA on, the password step is only ever a challenge
+        // (device trust is not enabled).
+        const created = ctx.context.newSession;
+        const challenge = ctx.path === "/sign-in/email" && (!created || Boolean(created.user.twoFactorEnabled));
+        await connectToDatabase();
+        if (created && !challenge) {
+          await recordAudit(
+            { ...actorBase, actorId: created.user.id, actorRole: roleOf(created.user), sessionId: created.session.id },
+            { action: "LOGIN", resourceType: "Session", resourceId: created.session.id, metadata: { step: ctx.path } },
+          );
+        } else if (challenge) {
+          const email = typeof ctx.body?.email === "string" ? ctx.body.email.toLowerCase() : undefined;
+          const user = email ? await ctx.context.internalAdapter.findUserByEmail(email).then((r) => r?.user) : undefined;
+          await recordAudit(
+            { ...actorBase, actorId: user?.id, actorRole: user ? roleOf(user) : "ANONYMOUS" },
+            { action: "MFA_CHALLENGE", resourceType: "Session", metadata: { step: "password accepted; second step pending" } },
+          );
+        }
+      }),
     },
 
     plugins: [

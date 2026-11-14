@@ -45,6 +45,23 @@ describe("Better Auth configuration", () => {
     expect(login).toMatchObject({ resourceType: "Session", outcome: "SUCCESS" });
   });
 
+  it("records a wrong password as LOGIN_FAILED without storing the email", async () => {
+    await expect(getAuth().api.signInEmail({ body: { email, password: "wrong-password-123" } })).rejects.toThrow();
+    const failed = await AuditLog.findOne({ action: "LOGIN_FAILED" }).sort({ seq: -1 }).setOptions({ authz: SYS }).lean();
+    expect(failed).toMatchObject({ outcome: "DENIED", actorRole: "PATIENT" });
+    expect(JSON.stringify(failed)).not.toContain("@");
+  });
+
+  it("logs only an MFA challenge (not a login) when the password is right but a code is still needed", async () => {
+    await mongoose.connection.collection("user").updateOne({ email }, { $set: { twoFactorEnabled: true } });
+    const before = await AuditLog.countDocuments({ action: "LOGIN" }).setOptions({ authz: SYS });
+    const result = await getAuth().api.signInEmail({ body: { email, password } });
+    expect(result).toMatchObject({ twoFactorRedirect: true });
+    expect(await AuditLog.countDocuments({ action: "LOGIN" }).setOptions({ authz: SYS })).toBe(before);
+    expect(await AuditLog.countDocuments({ action: "MFA_CHALLENGE" }).setOptions({ authz: SYS })).toBe(1);
+    await mongoose.connection.collection("user").updateOne({ email }, { $set: { twoFactorEnabled: false } });
+  });
+
   it("rejects short passwords", async () => {
     await expect(getAuth().api.signUpEmail({ body: { email: "short@example.com", password: "tooshort", name: "S" } })).rejects.toThrow();
   });

@@ -85,6 +85,8 @@ export const getAuthContext = cache(async (allowMfaSetup = false): Promise<AuthC
     userAgent: requestHeaders.get("user-agent") ?? undefined,
     requestId: requestHeaders.get("x-vercel-id") ?? undefined,
     mfaVerified,
+    displayName: user.name,
+    email: user.email,
   };
 });
 

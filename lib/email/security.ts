@@ -8,7 +8,15 @@ import { SITE_NAME } from "@/lib/constants";
 
 async function send(to: string, subject: string, text: string) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
-  if (!apiKey) {
+  // Seeded development accounts use example.com: print instead of emailing.
+  const devRecipient = process.env.NODE_ENV !== "production" && /@example\.(com|org|net)$/i.test(to);
+  // Explicit console transport for local production builds and end-to-end tests; never on Vercel production.
+  const consoleTransport = process.env.EMAIL_TRANSPORT === "console" && process.env.VERCEL_ENV !== "production";
+  if (consoleTransport) {
+    console.info(`[console email] to=${to} subject="${subject}"\n${text}`);
+    return;
+  }
+  if (!apiKey || devRecipient) {
     if (process.env.NODE_ENV === "production") throw new Error("RESEND_API_KEY is required to send security emails.");
     console.info(`[dev email] to=${to} subject="${subject}"\n${text}`);
     return;
