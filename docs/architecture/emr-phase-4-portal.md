@@ -3,7 +3,7 @@
 Phase 4 builds the client-facing side of the platform at `/portal`. It's delivered in slices:
 
 1. Billing and payments (Use Case 4), done
-2. Appointments: booking, cancelling, and joining video visits
+2. Appointments: booking, cancelling, and joining video visits, done
 3. Consents, intake forms, and documents
 4. Secure messages
 
@@ -56,3 +56,22 @@ The service code is in `lib/services/payments.ts`. The processor abstraction is 
 - the 3 × $80 plan from enrollment through completion;
 - A/R updating after payment;
 - reminder throttling, and that reminders contain no dollar amounts.
+
+## Slice 2: Appointments
+
+The service code is in `lib/services/portal-appointments.ts`, which wraps `scheduling.ts` with the client-side rules. The pages are under `app/portal/appointments/*`.
+
+- **List** (`/portal/appointments`): upcoming visits with Join and Cancel, plus past and cancelled visits. Times are Eastern.
+- **Booking** (`/portal/appointments/book`):
+  - Clients book with their assigned provider only, and only `patientBookable` visit types. Office-only visits such as the initial evaluation aren't offered.
+  - A week of openings is shown at half-hour starts; staff can still book any 15-minute slot.
+  - Video visits require a current, signed `TELEHEALTH_CONSENT`. Without one, the page explains why and offers in-person visits.
+  - Booking goes through `bookAppointment`, so the double-booking guard and the telehealth session are the same as for staff.
+- **Cancelling** (`/portal/appointments/[id]/cancel`):
+  - Before confirming, `cancellationPreview` shows the hours of notice and any fee under the client's signed financial agreement, for example the $75 fee inside 24 hours.
+  - Clients can't waive fees. Waitlist matches are returned to staff only.
+- **Video** (`/portal/appointments/[id]/visit`):
+  - Join opens 15 minutes before the start and stays open until the scheduled end. It also requires the telehealth consent.
+  - Joining checks the client in. The appointment becomes CHECKED_IN, the session becomes IN_WAITING_ROOM, and the client appears in the provider's waiting room.
+  - The page refreshes every 10 seconds until the provider admits the client, then shows the in-session view. Video is the same mock tile as on the staff side.
+- **Tests:** `tests/db/portal-appointments.test.ts` covers the visit list, booking rules (own provider, visit types, consent), fee and no-fee cancellations, and the join window.

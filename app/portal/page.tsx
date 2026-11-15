@@ -55,7 +55,7 @@ export default async function PortalHome() {
     {
       label: "Next appointment",
       value: nextVisit ? formatDateTime(nextVisit.scheduledStart) : "None scheduled",
-      hint: nextVisit ? (nextVisit.mode === "VIRTUAL" ? "Video visit: the join link appears here 15 minutes before" : "In person") : "Request a time from the Appointments page (coming soon)",
+      hint: nextVisit ? (nextVisit.mode === "VIRTUAL" ? "Video visit: the join link appears here 15 minutes before" : "In person") : "Book a visit from the Appointments page",
       icon: "calendar",
     },
     {

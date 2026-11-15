@@ -29,7 +29,7 @@ export const STAFF_NAV: NavItem[] = [
 
 export const PATIENT_NAV: NavItem[] = [
   { label: "Overview", href: "/portal", icon: "home", ready: true },
-  { label: "Appointments", href: "/portal/appointments", icon: "calendar", ready: false },
+  { label: "Appointments", href: "/portal/appointments", icon: "calendar", ready: true },
   { label: "Forms & intake", href: "/portal/intake", icon: "checkCircle", ready: false },
   { label: "Documents", href: "/portal/documents", icon: "book", ready: false },
   { label: "Consents", href: "/portal/consents", icon: "shield", ready: false },

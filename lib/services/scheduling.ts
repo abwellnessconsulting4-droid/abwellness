@@ -203,7 +203,7 @@ async function loadAppointment(ctx: AuthContext, appointmentId: string) {
 }
 
 /** The cancellation/no-show terms from the client's current signed financial agreement. */
-async function signedPolicy(patientId: Types.ObjectId | string) {
+export async function signedPolicy(patientId: Types.ObjectId | string) {
   const signed = await SignedConsent.findOne({ patientId, consentType: "FINANCIAL_RESPONSIBILITY", revokedAt: null }).sort({ "signature.signedAt": -1 }).setOptions({ authz: LOOKUP }).lean();
   if (!signed) return null;
   const template = await ConsentTemplate.findById(signed.templateId, { terms: 1, version: 1 }).lean();
