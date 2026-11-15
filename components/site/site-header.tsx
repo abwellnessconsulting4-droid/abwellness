@@ -58,7 +58,7 @@ export function SiteHeader() {
           </Column>
         </Link>
 
-        <Row as="nav" aria-label="Main" gap="4" vertical="center" m={{ hide: true }} className="site-header__desktop">
+        <Row as="nav" aria-label="Main" gap="12" vertical="center" m={{ hide: true }} className="site-header__desktop">
           {MAIN_NAV.map((item) => (
             <SmartLink
               key={item.href}
@@ -71,8 +71,9 @@ export function SiteHeader() {
           ))}
         </Row>
 
-        <Row gap="8" vertical="center" m={{ hide: true }} className="site-header__desktop">
-          <Button href="/login" variant="tertiary" size="s" label="Client login" />
+        {/* Account entry (existing clients) is set apart from the menu and the new-client call to action. */}
+        <Row gap="12" vertical="center" m={{ hide: true }} className="site-header__desktop site-header__actions">
+          <Button href="/login" variant="secondary" size="s" prefixIcon="account" label="Client login" />
           <Button href="/request-services" variant="primary" size="s" label="Request services" />
         </Row>
 
@@ -112,10 +113,10 @@ export function SiteHeader() {
               label={item.label}
             />
           ))}
-          <Row gap="8" paddingTop="12">
-            <Button href="/login" variant="secondary" fillWidth label="Client login" />
+          <Column gap="8" paddingTop="16" marginTop="8" className="site-header__mobile-actions">
             <Button href="/request-services" variant="primary" fillWidth label="Request services" />
-          </Row>
+            <Button href="/login" variant="secondary" fillWidth prefixIcon="account" label="Client login" />
+          </Column>
         </Column>
       )}
     </Column>

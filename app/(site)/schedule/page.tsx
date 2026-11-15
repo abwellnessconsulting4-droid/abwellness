@@ -13,6 +13,7 @@ export default function SchedulePage() {
   return (
     <>
       <PageHero
+        icon="calendarCheck"
         eyebrow="Schedule"
         title="Book a time to talk"
         description="Pick the conversation that fits where you are. Every relationship starts with a free introductory call."

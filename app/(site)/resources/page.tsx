@@ -14,6 +14,7 @@ export default function ResourcesPage() {
   return (
     <>
       <PageHero
+        icon="library"
         eyebrow="Resources"
         title="Helpful tools and trusted connections"
         description="Guides and toolkits to support your progress between sessions, plus where to turn right away if you need urgent help."

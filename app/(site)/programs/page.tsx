@@ -14,6 +14,7 @@ export default function ProgramsPage() {
   return (
     <>
       <PageHero
+        icon="graduationCap"
         eyebrow="Programs"
         title="Structured programs for focused goals"
         description="Each program pairs a clear structure with personal support, so you always know what you're working toward and who's helping."

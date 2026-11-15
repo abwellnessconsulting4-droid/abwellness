@@ -1,5 +1,7 @@
 import { Analytics } from "@vercel/analytics/next";
 import { Column, Line } from "@once-ui-system/core";
+import { AccessibilityWidget } from "@/components/site/accessibility-widget";
+import { BackToTop } from "@/components/site/back-to-top";
 import { FooterNav } from "@/components/site/footer-nav";
 import { PreviewBanner } from "@/components/site/preview-banner";
 import { SiteHeader } from "@/components/site/site-header";
@@ -20,6 +22,7 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
       <>
         {children}
         <Analytics />
+        <AccessibilityWidget />
       </>
     );
   }
@@ -41,6 +44,8 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
         <FooterNav />
         <SiteFooter />
       </Column>
+      <BackToTop />
+      <AccessibilityWidget />
     </>
   );
 }

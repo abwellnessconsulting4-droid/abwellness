@@ -16,59 +16,42 @@ interface PageHeroProps {
   title: string;
   description: string;
   actions?: ReactNode;
+  /** Lucide icon (resources/icons.ts) shown in the medallion and the eyebrow. */
+  icon?: string;
 }
 
-export function PageHero({ eyebrow, title, description, actions }: PageHeroProps) {
+/**
+ * Hero for inner pages (About, Services, ...): a full-width colored band with
+ * a gold accent and an icon medallion, distinct from the home page hero.
+ */
+export function PageHero({ eyebrow, title, description, actions, icon = "sparkles" }: PageHeroProps) {
   return (
-    <Column
-      as="section"
-      fillWidth
-      position="relative"
-      horizontal="center"
-      paddingX="l"
-      paddingTop="104"
-      paddingBottom="80"
-      s={{ paddingX: "16", paddingTop: "64", paddingBottom: "48" }}
-    >
-      <Background
-        position="absolute"
-        top="0"
-        left="0"
-        fill
-        pointerEvents="none"
-        gradient={{
-          display: true,
-          colorStart: "brand-alpha-medium",
-          colorEnd: "static-transparent",
-          x: 50,
-          y: 0,
-          width: 120,
-          height: 70,
-          opacity: 40,
-        }}
-      />
-      <Column maxWidth="m" horizontal="center" gap="20" zIndex={1}>
-        <Text variant="label-default-s" onBackground="accent-medium" align="center">
-          {eyebrow}
-        </Text>
-        <Heading as="h1" variant="display-strong-m" align="center" wrap="balance">
-          {title}
-        </Heading>
-        <Text
-          variant="body-default-l"
-          onBackground="neutral-medium"
-          align="center"
-          wrap="balance"
-        >
-          {description}
-        </Text>
-        {actions && (
-          <Row gap="12" paddingTop="8" horizontal="center" wrap>
-            {actions}
-          </Row>
-        )}
-      </Column>
-    </Column>
+    <section className="page-hero">
+      <div className="page-hero__inner">
+        <div className="page-hero__text">
+          <span className="page-hero__eyebrow">
+            <Icon name={icon} size="xs" decorative />
+            {eyebrow}
+          </span>
+          <Heading as="h1" variant="display-strong-m" wrap="balance">
+            {title}
+          </Heading>
+          <Text variant="body-default-l" onBackground="neutral-medium" wrap="balance" className="page-hero__lede">
+            {description}
+          </Text>
+          {actions && (
+            <Row gap="12" paddingTop="8" wrap>
+              {actions}
+            </Row>
+          )}
+        </div>
+        <div className="page-hero__medallion" aria-hidden="true">
+          <span className="page-hero__ring">
+            <Icon name={icon} size="xl" decorative />
+          </span>
+        </div>
+      </div>
+    </section>
   );
 }
 

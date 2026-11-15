@@ -17,6 +17,7 @@ export default function FounderPage() {
     <>
       <JsonLd data={founderJsonLd()} />
       <PageHero
+        icon="award"
         eyebrow="Our founder"
         title={`${FOUNDER.name}, ${FOUNDER.postNominal}`}
         description={`${FOUNDER.title}, ${SITE_NAME}. ${FOUNDER.specialties.join(" · ")}`}

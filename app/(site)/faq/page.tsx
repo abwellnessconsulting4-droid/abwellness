@@ -15,6 +15,7 @@ export default function FaqPage() {
     <>
       <JsonLd data={faqJsonLd()} />
       <PageHero
+        icon="help"
         eyebrow="FAQ"
         title="Questions, answered"
         description="If you don't see your question here, reach out. We're happy to help."
