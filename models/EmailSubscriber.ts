@@ -21,7 +21,6 @@ const EmailSubscriberSchema = new Schema(
   },
 );
 
-EmailSubscriberSchema.index({ email: 1 }, { unique: true });
 
 export type EmailSubscriberDocument = InferSchemaType<typeof EmailSubscriberSchema>;
 

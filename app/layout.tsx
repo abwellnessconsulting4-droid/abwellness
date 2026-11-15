@@ -5,11 +5,12 @@ import "./globals.css";
 
 import classNames from "classnames";
 import type { Viewport } from "next";
-import { Column, Flex, Meta, Schema, ThemeInit } from "@once-ui-system/core";
+import { Column, Flex, Meta, ThemeInit } from "@once-ui-system/core";
+import { JsonLd, organizationJsonLd } from "@/components/site/json-ld";
 import { Providers } from "@/components/providers";
 import { SITE_NAME } from "@/lib/constants";
 import { dataStyle, fonts, style } from "@/resources/once-ui.config";
-import { baseURL, meta, schema } from "@/resources/seo";
+import { baseURL, isIndexable, meta } from "@/resources/seo";
 
 export const viewport: Viewport = {
   themeColor: "#001428",
@@ -28,6 +29,8 @@ export async function generateMetadata() {
 
   return {
     ...generated,
+    title: { default: meta.home.title, template: `%s | ${SITE_NAME}` },
+    robots: isIndexable() ? { index: true, follow: true } : { index: false, follow: false },
     metadataBase: new URL(baseURL),
     applicationName: SITE_NAME,
     openGraph: {
@@ -61,14 +64,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       )}
     >
       <head>
-        <Schema
-          as={schema.as}
-          title={schema.title}
-          description={schema.description}
-          baseURL={schema.baseURL}
-          path={schema.path}
-          image={schema.image}
-        />
+        <JsonLd data={organizationJsonLd()} />
         <ThemeInit
           config={{
             theme: style.theme,

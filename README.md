@@ -35,6 +35,29 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). Waitlist signups are saved to MongoDB through `POST /api/subscribe`. Resend then sends a confirmation to the subscriber and a notice to `WAITLIST_NOTIFY_EMAIL`. Get an API key from [resend.com/api-keys](https://resend.com/api-keys). Until a domain is verified at [resend.com/domains](https://resend.com/domains), use `onboarding@resend.dev` as the from address.
 
+## EMR / client portal (in development)
+
+The `feature/emr-core` branch adds the clinical, billing, and portal foundation (auth with MFA, RBAC, encrypted PHI fields, audit trail, 28 data models). See [docs/architecture/emr-phase-1.md](docs/architecture/emr-phase-1.md).
+
+```bash
+npm test           # 75 tests against a throwaway MongoDB replica set
+npm run seed:emr   # development dataset for the six use cases (see docs/architecture/emr-seed-data.md)
+```
+
+Local development needs `BETTER_AUTH_SECRET` and `ENCRYPTION_KEY` in `.env.local` (see `.env.example`). Use a development database only: never real patient data outside a BAA-covered production cluster.
+
+## Site modes
+
+The public site has three modes, set with `SITE_MODE` (see `lib/site-mode.ts`):
+
+| Mode | What visitors see | Default for |
+|---|---|---|
+| `coming-soon` | Countdown + waitlist only; every other page redirects to `/` | Production builds |
+| `preview` | Full site with a "Website preview" banner; not indexed by search engines | `npm run dev`, Vercel preview deployments |
+| `live` | Full site, indexed | Set explicitly at launch |
+
+Pages are prerendered, so changing `SITE_MODE` needs a redeploy. Site copy lives in `content/site.ts` and `content/legal.ts`; anything in `[brackets]` is a placeholder.
+
 ## Project structure
 
 ```text
