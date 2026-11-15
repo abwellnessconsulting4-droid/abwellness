@@ -1,10 +1,11 @@
 import { Button, Column, Feedback, Heading, Row, SmartLink, Tag, Text } from "@once-ui-system/core";
-import { joinVideoAction } from "@/app/portal/appointments/actions";
-import { JoinButton } from "@/components/portal/appointment-forms";
+import { joinVideoAction, rateVisitAction } from "@/app/portal/appointments/actions";
+import { JoinButton, RateVisit } from "@/components/portal/appointment-forms";
 import { requireSession } from "@/lib/dal";
 import { connectToDatabase } from "@/lib/mongodb";
 import { JOIN_EARLY_MINUTES, myAppointments } from "@/lib/services/portal-appointments";
 import { DEFAULT_TZ } from "@/lib/services/scheduling";
+import { visitsToRate } from "@/lib/services/surveys";
 import { formatDateTime } from "@/lib/time";
 import { formatTime } from "@/lib/tz";
 
@@ -26,7 +27,7 @@ export default async function PortalAppointmentsPage({ searchParams }: PageProps
   await connectToDatabase();
   const query = await searchParams;
   if (!ctx.patientId) return <Text variant="body-default-m">Your account isn&apos;t linked to a client record yet.</Text>;
-  const { upcoming, past } = await myAppointments(ctx);
+  const [{ upcoming, past }, rateable] = await Promise.all([myAppointments(ctx), visitsToRate(ctx)]);
 
   return (
     <Column gap="32" fillWidth>
@@ -39,6 +40,7 @@ export default async function PortalAppointmentsPage({ searchParams }: PageProps
       </Row>
 
       {query.booked && <Feedback variant="success" title="You're booked" description="Your appointment is below. Video visits open here 15 minutes before the start time." />}
+      {query.rated && <Feedback variant="success" description="Thanks for your feedback. It helps us improve." />}
       {query.cancelled === "1" && <Feedback variant="success" description="Your appointment was cancelled. No fee applies." />}
       {query.cancelled === "fee" && <Feedback variant="info" description="Your appointment was cancelled. A late-cancellation fee was added to Billing, per your signed financial agreement." />}
 
@@ -90,7 +92,12 @@ export default async function PortalAppointmentsPage({ searchParams }: PageProps
                       <td>{formatDateTime(a.start)}</td>
                       <td>{a.visit} with {a.provider}</td>
                       <td>{a.mode === "VIRTUAL" ? "Video" : "In person"}</td>
-                      <td><Tag variant={tag.variant} label={tag.label} /></td>
+                      <td>
+                        <Column gap="8">
+                          <Tag variant={tag.variant} label={tag.label} />
+                          {rateable.includes(a.id) && <RateVisit action={rateVisitAction.bind(null, a.id)} />}
+                        </Column>
+                      </td>
                     </tr>
                   );
                 })}

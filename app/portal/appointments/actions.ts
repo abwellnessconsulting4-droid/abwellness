@@ -7,6 +7,7 @@ import { requireSession } from "@/lib/dal";
 import { connectToDatabase } from "@/lib/mongodb";
 import { bookMine, cancelMine, joinVideo } from "@/lib/services/portal-appointments";
 import { SchedulingError } from "@/lib/services/scheduling";
+import { submitSurvey, SurveyError } from "@/lib/services/surveys";
 
 export interface PortalApptState {
   error?: string;
@@ -57,4 +58,16 @@ export async function joinVideoAction(appointmentId: string, _prev: PortalApptSt
     return friendly(error);
   }
   redirect(`/portal/appointments/${appointmentId}/visit`);
+}
+
+export async function rateVisitAction(appointmentId: string, _prev: PortalApptState, form: FormData): Promise<PortalApptState> {
+  const ctx = await patient();
+  try {
+    await submitSurvey(ctx, { appointmentId, rating: Number(form.get("rating")), comment: text(form, "comment") });
+  } catch (error) {
+    if (error instanceof SurveyError) return { error: error.message };
+    throw error;
+  }
+  revalidatePath("/portal/appointments");
+  redirect("/portal/appointments?rated=1");
 }

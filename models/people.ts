@@ -46,6 +46,8 @@ const EmergencyContactSchema = new Schema(
   { _id: true },
 );
 
+export const REFERRAL_SOURCES = ["SELF", "PROVIDER_REFERRAL", "INSURANCE", "WEBSITE", "COMMUNITY_PARTNER", "EMPLOYER", "OTHER"] as const;
+
 export const PatientSchema = new Schema(
   {
     userId: ref("User", false), // portal account, once invited
@@ -73,6 +75,8 @@ export const PatientSchema = new Schema(
     ssnLast4: { type: String, match: /^\d{4}$/ },
     ssnHash: { type: String, select: false },
     portalInvitedAt: Date,
+    // How the client found us (referral conversion analytics).
+    referralSource: { type: String, enum: REFERRAL_SOURCES },
     registeredAt: { type: Date, default: Date.now },
     legalHold: { type: Boolean, default: false },
   },

@@ -191,4 +191,5 @@ export const ENC = {
   documentFileName: "ClinicalDocument.fileName",
   messageBody: "SecureMessage.body",
   appointmentReason: "Appointment.reason",
+  surveyComment: "VisitSurvey.comment",
 } as const;

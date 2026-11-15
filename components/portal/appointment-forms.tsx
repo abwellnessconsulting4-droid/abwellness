@@ -61,3 +61,34 @@ export function JoinButton({ action }: { action: (state: PortalApptState) => Pro
     </form>
   );
 }
+
+/** Post-visit rating: 1–5 stars and an optional comment. */
+export function RateVisit({ action }: { action: Action }) {
+  const [state, formAction, pending] = useActionState(action, {});
+  return (
+    <details className="action-panel inline-panel">
+      <summary>
+        <Text variant="label-strong-s">Rate this visit</Text>
+      </summary>
+      <form action={formAction} className="fill-width">
+        <Column gap="8" paddingTop="8">
+          <fieldset className="star-rating">
+            <legend>How was your visit?</legend>
+            {[1, 2, 3, 4, 5].map((n) => (
+              <label key={n}>
+                <input type="radio" name="rating" value={n} required />
+                <span aria-hidden="true">★</span>
+                <span className="sr-only">{n} {n === 1 ? "star" : "stars"}</span>
+              </label>
+            ))}
+          </fieldset>
+          <Input id="comment" name="comment" label="Anything to share? (optional)" maxLength={1000} />
+          {state.error && <Feedback variant="danger" description={state.error} />}
+          <Row>
+            <Button type="submit" size="s" variant="primary" label="Send rating" loading={pending} disabled={pending} />
+          </Row>
+        </Column>
+      </form>
+    </details>
+  );
+}

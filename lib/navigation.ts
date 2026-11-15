@@ -21,7 +21,7 @@ export const STAFF_NAV: NavItem[] = [
   { label: "Telehealth", href: "/dashboard/telehealth", icon: "chat", requires: { resource: "telehealth", action: "read" }, ready: true },
   { label: "Billing & claims", href: "/dashboard/billing", icon: "building", requires: { resource: "claim", action: "read" }, ready: true },
   { label: "Messages", href: "/dashboard/messages", icon: "mail", requires: { resource: "message", action: "read" }, ready: true },
-  { label: "Analytics", href: "/dashboard/analytics", icon: "sparkles", requires: { resource: "analytics", action: "read" }, ready: false },
+  { label: "Analytics", href: "/dashboard/analytics", icon: "sparkles", requires: { resource: "analytics", action: "read" }, ready: true },
   { label: "Users", href: "/dashboard/users", icon: "people", requires: { resource: "user", action: "update" }, ready: true },
   { label: "Audit trail", href: "/dashboard/audit", icon: "shield", requires: { resource: "auditLog", action: "read" }, ready: true },
   { label: "Compliance", href: "/dashboard/compliance", icon: "lock", requires: { resource: "compliance", action: "read" }, ready: false },

@@ -30,6 +30,7 @@ import {
   SignedConsent,
   slotStartsFor,
   StaffProfile,
+  VisitSurvey,
   TelehealthSession,
   TreatmentPlan,
   WaitlistEntry,
@@ -191,7 +192,7 @@ export const CONSENT_TEMPLATES = [
 const EMR_COLLECTIONS = [
   StaffProfile, Patient, HealthAssessment, ClinicalNote, Diagnosis, TreatmentPlan, Medication, Allergy, ClinicalDocument,
   MedicalCode, InsurancePolicy, Claim, RemittanceAdvice, Invoice, ConsentTemplate, SignedConsent, ComplianceRecord,
-  ProviderSchedule, Appointment, AppointmentSlot, WaitlistEntry, MessageThread, SecureMessage, TelehealthSession,
+  ProviderSchedule, Appointment, AppointmentSlot, WaitlistEntry, MessageThread, SecureMessage, TelehealthSession, VisitSurvey,
 ].map((model) => model.collection.collectionName);
 
 /** Drop EMR collections and seeded accounts (development databases only; the guard runs first). */
@@ -297,18 +298,18 @@ export async function seedEmr(options: { password?: string } = {}): Promise<Seed
     mrn: "ABW-2026-0001", firstName: "Elena", lastName: "Vance", dob: at("1989-04-18"), gender: "Female", sexAtBirth: "FEMALE", pronouns: "she/her",
     email: "elena.vance@example.com", phone: "+12125550148", address: { street: "412 W 42nd St", street2: "Apt 9B", city: "New York", state: "NY", zip: "10036" },
     emergencyContacts: [{ name: "Marisol Vance", relationship: "Sister", phone: "+12125550177", isNextOfKin: true, mayDisclosePhi: true }],
-    assignedProviderId: IDS.staff.thorne, registeredAt: at("2026-11-09T17:55:00Z"),
+    assignedProviderId: IDS.staff.thorne, referralSource: "PROVIDER_REFERRAL", registeredAt: at("2026-11-09T17:55:00Z"),
   }, "900-12-3401");
   await patient("david", {
     mrn: "ABW-2026-0002", firstName: "David", lastName: "Morales", dob: at("1978-11-02"), gender: "Male", sexAtBirth: "MALE", preferredLanguage: "es",
     email: "david.morales@example.com", phone: "+17185550192", address: { street: "88-15 Queens Blvd", city: "Elmhurst", state: "NY", zip: "11373" },
     emergencyContacts: [{ name: "Ana Morales", relationship: "Spouse", phone: "+17185550193", isNextOfKin: true, mayDisclosePhi: true }],
-    assignedProviderId: IDS.staff.thorne, registeredAt: at("2026-10-20T13:00:00Z"),
+    assignedProviderId: IDS.staff.thorne, referralSource: "INSURANCE", registeredAt: at("2026-10-20T13:00:00Z"),
   }, "900-12-3402");
   await patient("sofia", {
     mrn: "ABW-2026-0003", firstName: "Sofia", lastName: "Lin", dob: at("1994-07-09"), gender: "Female", sexAtBirth: "FEMALE",
     email: "sofia.lin@example.com", phone: "+13475550116", address: { street: "150 Lafayette St", city: "New York", state: "NY", zip: "10013" },
-    assignedProviderId: IDS.staff.ellis, registeredAt: at("2026-11-12T16:20:00Z"),
+    assignedProviderId: IDS.staff.ellis, referralSource: "COMMUNITY_PARTNER", registeredAt: at("2026-11-12T16:20:00Z"),
   }, "900-12-3403");
   await Counter.updateOne({ _id: "mrn:2026" }, { $max: { seq: 3 } }, { upsert: true });
 
@@ -550,6 +551,12 @@ export async function seedEmr(options: { password?: string } = {}): Promise<Seed
   await createScoped(WaitlistEntry, SEED, {
     patientId: IDS.patients.sofia, providerId: IDS.staff.thorne, visitType: "therapy-45", modes: ["IN_PERSON"], preferredDays: [5],
     earliestDate: at("2026-11-12"), latestDate: at("2026-12-31"), priority: 1, addedBy: user("priya"),
+  });
+
+  // Post-visit survey: Elena rated her 11/11 evaluation.
+  await createScoped(VisitSurvey, SEED, {
+    patientId: IDS.patients.elena, appointmentId: IDS.appointments.elenaInitial, providerId: IDS.staff.thorne, rating: 5,
+    commentEnc: encrypt("Felt heard and left with a clear plan.", ENC.surveyComment), submittedAt: at("2026-11-11T20:00:00Z"),
   });
 
   // Secure messages

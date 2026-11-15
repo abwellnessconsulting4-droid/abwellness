@@ -149,3 +149,20 @@ WaitlistEntrySchema.index({ status: 1, providerId: 1, priority: -1, createdAt: 1
 WaitlistEntrySchema.index({ patientId: 1, status: 1 });
 WaitlistEntrySchema.plugin(phiGuard);
 export const WaitlistEntry = defineModel("WaitlistEntry", WaitlistEntrySchema);
+
+/** Post-visit satisfaction survey (portal), one per completed appointment. */
+export const VisitSurveySchema = new Schema(
+  {
+    patientId: ref("Patient"),
+    appointmentId: ref("Appointment"),
+    providerId: ref("StaffProfile"),
+    rating: { type: Number, min: 1, max: 5, required: true },
+    commentEnc: encrypted(), // free text may contain health details
+    submittedAt: { type: Date, default: Date.now },
+  },
+  baseOptions,
+);
+VisitSurveySchema.index({ appointmentId: 1 }, { unique: true });
+VisitSurveySchema.index({ providerId: 1, submittedAt: -1 });
+VisitSurveySchema.plugin(phiGuard);
+export const VisitSurvey = defineModel("VisitSurvey", VisitSurveySchema);
