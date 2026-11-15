@@ -84,6 +84,7 @@ export default async function ChartPage({ params, searchParams }: PageProps<"/da
             </Text>
           </Column>
           {canNote && tab === "notes" && <Button href={`/dashboard/patients/${id}/notes/new`} variant="primary" size="s" label="New note" prefixIcon="plus" />}
+          {can(ctx.role, "message", "create") && ctx.role !== "SUPER_ADMIN" && <Button href={`/dashboard/messages/new?patient=${id}`} variant="secondary" size="s" label="Message" prefixIcon="mail" />}
         </Row>
         {chart.allergies && chart.allergies.length > 0 && (
           <Feedback variant="warning" title="Allergies" description={chart.allergies.map((a) => `${a.allergen}${a.reaction ? ` (${a.reaction})` : ""}`).join(" · ")} />

@@ -101,6 +101,9 @@ function refinements(ctx: AuthContext, resource: Resource, target: AccessTarget)
   if (resource === "message" && ctx.role === "FRONT_DESK" && target.messageCategory === "CLINICAL") {
     return "front desk cannot access clinical threads";
   }
+  if (resource === "message" && ctx.role === "BILLING_STAFF" && target.messageCategory && target.messageCategory !== "BILLING") {
+    return `message category ${target.messageCategory} not permitted for ${ctx.role}`;
+  }
   return null;
 }
 
@@ -160,6 +163,7 @@ export async function scopeFilter(ctx: AuthContext, resource: Resource, action: 
   const categories = DOCUMENT_CATEGORY_ACCESS[ctx.role];
   if (resource === "document" && categories) extra.category = { $in: categories };
   if (resource === "message" && ctx.role === "FRONT_DESK") extra.category = { $ne: "CLINICAL" };
+  if (resource === "message" && ctx.role === "BILLING_STAFF") extra.category = "BILLING";
 
   if (resource === "psychotherapyNote") {
     const grant = { accessGrants: { $elemMatch: { userId: new Types.ObjectId(ctx.userId), expiresAt: { $gt: new Date() } } } };

@@ -5,7 +5,9 @@ Phase 4 builds the client-facing side of the platform at `/portal`. It's deliver
 1. Billing and payments (Use Case 4), done
 2. Appointments: booking, cancelling, and joining video visits, done
 3. Consents, intake forms, and documents, done
-4. Secure messages
+4. Secure messages, done
+
+Phase 4 is complete.
 
 ## Slice 1: Billing and payments (Use Case 4)
 
@@ -121,3 +123,29 @@ The service code is in `lib/services/portal-appointments.ts`, which wraps `sched
 - encrypted storage round trips, file-type and size checks, and category limits;
 - consent states, stale or wrong-name signatures, and expiry;
 - screener scoring and the safety flag path, including that the email contains no client details.
+
+## Slice 4: Secure messages
+
+The service code is in `lib/services/messages.ts`. Server actions shared by staff and clients are in `app/messages-actions.ts`. The pages are `/portal/messages/*` and `/dashboard/messages/*`.
+
+- **Routing comes from RBAC** (`lib/authz.ts`), not from the participant list:
+
+  | Topic | Who can read and reply |
+  |---|---|
+  | Clinical ("A question for my provider") | The client's assigned provider |
+  | Scheduling, general | Front desk and the provider |
+  | Billing or insurance | Billing staff (new: billing threads only), front desk, and the provider |
+
+  Admins can read every thread for compliance review but can't reply. Front desk gets a 403 on clinical threads, and billing staff on anything outside billing.
+- **Privacy:**
+  - Message bodies are encrypted (`ENC.messageBody`). Subjects stay in plain text so inboxes can list them, and the form asks clients to keep them general.
+  - Email notices say only "you have a new secure message" with a sign-in link. Clients are emailed when staff reply. Providers are emailed when a client writes on a clinical thread; other topics wait in the office inbox.
+  - Each inbox view, thread view, and sent message is audited.
+- **Unread:** a thread is unread for a viewer when it has a message from the other side newer than their `lastReadAt`. Opening the thread marks it read.
+  - Staff see a "New" tag, an "Awaiting reply" tag, an Unread filter, and an "Unread messages" tile on the dashboard.
+  - Clients see "New reply".
+- **Starting conversations:** staff can start one with a client from `/dashboard/messages/new` or from the **Message** button on the client chart. Topics are limited to what their role may open.
+- **Closing:** staff can mark a thread resolved and close it. The client then starts a new conversation if needed.
+- **Safety copy:** the portal states that messages aren't monitored around the clock and shows 988 and 911.
+- **Not yet built:** attachments (the document vault can hold them; linking them to messages is a follow-up) and redaction tools for admins (`redactedAt` already exists on the model).
+- **Tests:** `tests/db/messages.test.ts` covers routing by role and topic, admin read-only access, notifications without content, unread state, closing, encryption at rest, and validation.

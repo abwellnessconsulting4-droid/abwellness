@@ -126,6 +126,7 @@ export const PERMISSIONS: Matrix = {
     paymentPlan: { read: "all", create: "all", update: "all" },
     signedConsent: { read: "all" }, // financial agreements
     appointment: { read: "all" },
+    message: { read: "all", create: "all" }, // BILLING threads only (lib/authz.ts)
     analytics: { read: "all", export: "all" },
   },
 

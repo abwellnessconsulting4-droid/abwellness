@@ -1,6 +1,7 @@
 import { Column, Grid, Heading, Icon, Row, SmartLink, Text } from "@once-ui-system/core";
 import { reviewSafetyAction } from "@/app/dashboard/safety-actions";
 import { openSafetyFlags } from "@/lib/services/assessments";
+import { unreadCount } from "@/lib/services/messages";
 import { verifyAuditChain } from "@/lib/audit";
 import { authzToken, withScope, type AuthContext } from "@/lib/authz";
 import { requireSession } from "@/lib/dal";
@@ -46,6 +47,10 @@ async function statsFor(ctx: AuthContext): Promise<Stat[]> {
   if (can(ctx.role, "patient", "read") && ctx.role !== "BILLING_STAFF") {
     const n = await count(ctx, "patient", Patient, { status: "ACTIVE" });
     add({ label: ctx.role === "PROVIDER" ? "My active clients" : "Active clients", value: String(n), hint: "Status: active", icon: "users" });
+  }
+  if (can(ctx.role, "message", "create") && ctx.role !== "SUPER_ADMIN") {
+    const n = await unreadCount(ctx);
+    add({ label: "Unread messages", value: String(n), hint: n ? "Clients waiting on a reply" : "You're all caught up", icon: "mail", tone: n > 0 ? "attention" : undefined });
   }
   if (can(ctx.role, "waitlist", "read") && ctx.role !== "PROVIDER") {
     const n = await count(ctx, "waitlist", WaitlistEntry, { status: "WAITING" });
