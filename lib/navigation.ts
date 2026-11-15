@@ -19,7 +19,7 @@ export const STAFF_NAV: NavItem[] = [
   { label: "Clients", href: "/dashboard/patients", icon: "users", requires: { resource: "patient", action: "read" }, ready: true },
   { label: "Schedule", href: "/dashboard/schedule", icon: "calendar", requires: { resource: "appointment", action: "read" }, ready: true },
   { label: "Telehealth", href: "/dashboard/telehealth", icon: "chat", requires: { resource: "telehealth", action: "read" }, ready: true },
-  { label: "Billing & claims", href: "/dashboard/billing", icon: "building", requires: { resource: "claim", action: "read" }, ready: false },
+  { label: "Billing & claims", href: "/dashboard/billing", icon: "building", requires: { resource: "claim", action: "read" }, ready: true },
   { label: "Messages", href: "/dashboard/messages", icon: "mail", requires: { resource: "message", action: "read" }, ready: false },
   { label: "Analytics", href: "/dashboard/analytics", icon: "sparkles", requires: { resource: "analytics", action: "read" }, ready: false },
   { label: "Users", href: "/dashboard/users", icon: "people", requires: { resource: "user", action: "update" }, ready: true },

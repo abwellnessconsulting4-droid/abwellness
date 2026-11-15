@@ -329,13 +329,13 @@ export async function seedEmr(options: { password?: string } = {}): Promise<Seed
 
   // Insurance (Elena: after the 11/11 claim, $370 of $500 deductible met)
   const memberId = (value: string) => ({ memberIdEnc: encrypt(value, ENC.insuranceMemberId), memberIdLast4: last4(value), memberIdHash: blindIndex(value, ENC.insuranceMemberId) });
-  await createScoped(InsurancePolicy, SEED, {
+  const elenaPolicy = await createScoped(InsurancePolicy, SEED, {
     patientId: IDS.patients.elena, priority: "PRIMARY", payerName: "BlueCross BlueShield of NY", payerId: "TEST-BCBSNY", planName: "PPO Gold",
     ...memberId("XYZ993847102"), groupNumber: "GRP-88412", copayCents: 3000, deductibleTotalCents: 50000, deductibleMetCents: 37000, coinsurancePercent: 20,
     cardFrontDocumentId: cardFront._id, cardBackDocumentId: cardBack._id,
     eligibility: { status: "VERIFIED", verifiedAt: at("2026-11-10T14:00:00Z"), verifiedBy: user("priya"), reference: "ELIG-TEST-0001" },
   });
-  await createScoped(InsurancePolicy, SEED, {
+  const davidPolicy = await createScoped(InsurancePolicy, SEED, {
     patientId: IDS.patients.david, priority: "PRIMARY", payerName: "Aetna Health", payerId: "TEST-AETNA", planName: "Open Access Managed Choice",
     ...memberId("W44120987"), groupNumber: "GRP-10294", copayCents: 2500, deductibleTotalCents: 100000, deductibleMetCents: 100000, coinsurancePercent: 10,
     eligibility: { status: "VERIFIED", verifiedAt: at("2026-11-12T09:30:00Z"), verifiedBy: user("priya") },
@@ -471,8 +471,8 @@ export async function seedEmr(options: { password?: string } = {}): Promise<Seed
   // Claims: Elena's went through the Use Case 3 denial/resubmission and was paid; David's was denied (CO-16).
   await createScoped(Claim, SEED, {
     _id: IDS.claims.elena, claimNumber: "CLM-2026-10041", patientId: IDS.patients.elena, providerId: IDS.staff.thorne,
-    clinicalNoteId: IDS.notes.elenaSoap, appointmentId: IDS.appointments.elenaInitial, payerName: "BlueCross BlueShield of NY",
-    lines: [{ serviceDate: at("2026-11-11"), cptCode: "90791", modifiers: ["GT"], units: 1, icdPointers: ["F41.1", "Z73.0"], placeOfService: "10", chargeCents: 21000, allowedCents: 17500, paidCents: 12500 }],
+    clinicalNoteId: IDS.notes.elenaSoap, appointmentId: IDS.appointments.elenaInitial, insurancePolicyId: elenaPolicy._id, payerName: "BlueCross BlueShield of NY",
+    lines: [{ serviceDate: at("2026-11-11T15:00:00Z"), cptCode: "90791", modifiers: ["GT"], units: 1, icdPointers: ["F41.1", "Z73.0"], placeOfService: "10", chargeCents: 21000, allowedCents: 17500, paidCents: 12500 }],
     status: "PAID",
     statusHistory: [
       { status: "DRAFT", at: at("2026-11-11T16:05:00Z"), note: "Generated from signed note" },
@@ -489,8 +489,8 @@ export async function seedEmr(options: { password?: string } = {}): Promise<Seed
   });
   await createScoped(Claim, SEED, {
     _id: IDS.claims.david, claimNumber: "CLM-2026-10042", patientId: IDS.patients.david, providerId: IDS.staff.thorne,
-    clinicalNoteId: IDS.notes.davidProgress, appointmentId: IDS.appointments.davidEarlier, payerName: "Aetna Health",
-    lines: [{ serviceDate: at("2026-11-06"), cptCode: "90834", modifiers: [], units: 1, icdPointers: ["F32.1"], placeOfService: "11", chargeCents: 15500 }],
+    clinicalNoteId: IDS.notes.davidProgress, appointmentId: IDS.appointments.davidEarlier, insurancePolicyId: davidPolicy._id, payerName: "Aetna Health",
+    lines: [{ serviceDate: at("2026-11-06T14:00:00Z"), cptCode: "90834", modifiers: [], units: 1, icdPointers: ["F32.1"], placeOfService: "11", chargeCents: 15500 }],
     status: "DENIED",
     statusHistory: [
       { status: "DRAFT", at: at("2026-11-06T15:10:00Z") },

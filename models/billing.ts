@@ -178,7 +178,8 @@ ClaimSchema.pre("validate", function () {
     this.invalidate("status", `Claim cannot move from ${from} to ${to}.`);
   }
   // Imports may supply their own history; otherwise record creation and each transition.
-  if ((this.isNew && this.statusHistory.length === 0) || (from && from !== to)) {
+  // (Services may push their own entry with who/why; don't duplicate it.)
+  if ((this.isNew && this.statusHistory.length === 0) || (from && from !== to && this.statusHistory.at(-1)?.status !== to)) {
     this.statusHistory.push({ status: to, at: new Date() });
   }
 });
