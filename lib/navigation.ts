@@ -33,7 +33,7 @@ export const PATIENT_NAV: NavItem[] = [
   { label: "Forms & intake", href: "/portal/intake", icon: "checkCircle", ready: false },
   { label: "Documents", href: "/portal/documents", icon: "book", ready: false },
   { label: "Consents", href: "/portal/consents", icon: "shield", ready: false },
-  { label: "Billing", href: "/portal/billing", icon: "building", ready: false },
+  { label: "Billing", href: "/portal/billing", icon: "building", ready: true },
   { label: "Messages", href: "/portal/messages", icon: "mail", ready: false },
 ];
 

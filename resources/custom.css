@@ -686,3 +686,33 @@ html.translated-rtl .site-header__mobile-menu {
   border-radius: 50%;
   background: var(--brand-solid-strong);
 }
+
+/* Portal billing */
+.plain-fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.plan-schedule {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.plan-schedule li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 12px;
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+}
+.terms-text {
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin: 0;
+}

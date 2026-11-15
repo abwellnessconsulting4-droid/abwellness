@@ -53,3 +53,6 @@ export function sendInvitation(to: string, name: string, url: string) {
 export function sendEmailVerification(to: string, url: string) {
   return send(to, `Confirm your email for ${SITE_NAME}`, `Confirm your email address to finish setting up your account:\n${url}`);
 }
+
+/** Shared plain-text sender for other non-PHI notices (e.g. billing reminders). */
+export { send as sendPlainEmail };

@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
 import { phiGuard } from "@/lib/db/phi-guard";
-import { baseOptions, cents, defineModel, encrypted, ref, signedCents } from "@/lib/db/schema";
+import { baseOptions, cents, defineModel, encrypted, ref, SignatureSchema, signedCents } from "@/lib/db/schema";
 
 // ── Code sets (reference data, not PHI) ────────────────────────────────────
 // ICD-10-CM and HCPCS Level II are public (CMS). CPT is licensed by the AMA:
@@ -274,6 +274,7 @@ export const InvoiceSchema = new Schema(
     paymentPlanId: ref("PaymentPlan", false),
     publishedToPortal: { type: Boolean, default: false },
     notes: String, // patient-facing; no clinical detail
+    lastReminderAt: Date,
   },
   baseOptions,
 );
@@ -304,7 +305,7 @@ export const PaymentTransactionSchema = new Schema(
     allocations: [{ _id: false, invoiceId: ref("Invoice"), amountCents: cents(true) }],
     amountCents: cents(true),
     method: { type: String, enum: ["CARD", "ACH", "CASH", "CHECK", "OTHER"], required: true },
-    processor: { type: String, enum: ["STRIPE", "MANUAL"], required: true },
+    processor: { type: String, enum: ["STRIPE", "MANUAL", "SIMULATED"], required: true }, // SIMULATED: test checkout, no card collected
     processorReference: String, // Stripe PaymentIntent / Refund id
     status: { type: String, enum: ["PENDING", "SUCCEEDED", "FAILED", "CANCELED"], default: "PENDING" },
     refundOfId: ref("PaymentTransaction", false),
@@ -351,6 +352,8 @@ export const PaymentPlanSchema = new Schema(
     stripePaymentMethodId: String, // tokenized; never raw card data
     status: { type: String, enum: ["ACTIVE", "COMPLETED", "DEFAULTED", "CANCELED"], default: "ACTIVE" },
     agreementSignedConsentId: ref("SignedConsent", false),
+    terms: String, // the exact plan terms the client agreed to
+    agreement: { type: SignatureSchema }, // typed signature over `terms`
   },
   baseOptions,
 );

@@ -37,7 +37,7 @@ export default async function PortalHome() {
       .sort({ scheduledStart: 1 })
       .setOptions(authz)
       .lean(),
-    Invoice.find(await withScope(ctx, "invoice", { status: { $in: ["UNPAID", "PARTIAL"] }, publishedToPortal: true }), { amountDueCents: 1, amountPaidCents: 1 })
+    Invoice.find(await withScope(ctx, "invoice", { status: { $in: ["UNPAID", "PARTIAL", "IN_PAYMENT_PLAN"] }, publishedToPortal: true }), { amountDueCents: 1, amountPaidCents: 1 })
       .setOptions(authz)
       .lean(),
     SignedConsent.find(await withScope(ctx, "signedConsent", { revokedAt: null }), { consentType: 1, expiresAt: 1 }).setOptions(authz).lean(),
