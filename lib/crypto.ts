@@ -109,6 +109,48 @@ export function decrypt(value: string, context: string): string {
   }
 }
 
+const BYTES_MAGIC = Buffer.from("ABWB1", "ascii");
+
+/**
+ * Encrypt a file. Layout: "ABWB1" | keyId length (1 byte) | keyId | iv (12) |
+ * tag (16) | ciphertext. `context` (e.g. the document id) is bound as AAD, so
+ * a stored file can't be swapped onto another record.
+ */
+export function encryptBytes(plaintext: Buffer, context: string): Buffer {
+  const { currentId, keys } = loadKeyring();
+  const iv = randomBytes(IV_BYTES);
+  const cipher = createCipheriv("aes-256-gcm", keys.get(currentId)!, iv);
+  cipher.setAAD(Buffer.from(context, "utf8"));
+  const ciphertext = Buffer.concat([cipher.update(plaintext), cipher.final()]);
+  const id = Buffer.from(currentId, "utf8");
+  return Buffer.concat([BYTES_MAGIC, Buffer.from([id.length]), id, iv, cipher.getAuthTag(), ciphertext]);
+}
+
+export function decryptBytes(payload: Buffer, context: string): Buffer {
+  if (payload.length < BYTES_MAGIC.length + 1 || !payload.subarray(0, BYTES_MAGIC.length).equals(BYTES_MAGIC)) {
+    throw new DecryptionError("File is not in the expected encrypted format.");
+  }
+  let offset = BYTES_MAGIC.length;
+  const idLength = payload[offset];
+  offset += 1;
+  const keyId = payload.subarray(offset, offset + idLength).toString("utf8");
+  offset += idLength;
+  const key = loadKeyring().keys.get(keyId);
+  if (!key) throw new DecryptionError(`Unknown encryption key id "${keyId}".`);
+  const iv = payload.subarray(offset, offset + IV_BYTES);
+  offset += IV_BYTES;
+  const tag = payload.subarray(offset, offset + 16);
+  offset += 16;
+  try {
+    const decipher = createDecipheriv("aes-256-gcm", key, iv);
+    decipher.setAAD(Buffer.from(context, "utf8"));
+    decipher.setAuthTag(tag);
+    return Buffer.concat([decipher.update(payload.subarray(offset)), decipher.final()]);
+  } catch {
+    throw new DecryptionError("Decryption failed: wrong key, wrong context, or tampered data.");
+  }
+}
+
 /** Encrypt a JSON-serialisable value (e.g. assessment responses). */
 export function encryptJson(value: unknown, context: string): string {
   return encrypt(JSON.stringify(value), context);

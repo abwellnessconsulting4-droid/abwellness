@@ -114,7 +114,7 @@ export async function getChart(ctx: AuthContext, patientId: string) {
     section("treatmentPlans", can(role, "treatmentPlan", "read"), async () =>
       TreatmentPlan.find(await withScope(ctx, "treatmentPlan", { patientId: pid })).sort({ createdAt: -1 }).setOptions(authz).lean()),
     section("assessments", can(role, "healthAssessment", "read"), async () =>
-      HealthAssessment.find(await withScope(ctx, "healthAssessment", { patientId: pid }), { type: 1, score: 1, severity: 1, completedAt: 1 }).sort({ completedAt: -1 }).setOptions(authz).lean()),
+      HealthAssessment.find(await withScope(ctx, "healthAssessment", { patientId: pid }), { type: 1, score: 1, severity: 1, completedAt: 1, safetyFlag: 1 }).sort({ completedAt: -1 }).setOptions(authz).lean()),
     section("notes", can(role, "clinicalNote", "read"), async () =>
       ClinicalNote.find(await withScope(ctx, "clinicalNote", { patientId: pid }), { noteType: 1, status: 1, providerId: 1, appointmentId: 1, createdAt: 1, "signature.signedAt": 1, addenda: 1 }).sort({ createdAt: -1 }).setOptions(authz).lean()),
     section("psychotherapyNotes", can(role, "psychotherapyNote", "read"), async () =>

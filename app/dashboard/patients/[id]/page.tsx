@@ -137,6 +137,7 @@ export default async function ChartPage({ params, searchParams }: PageProps<"/da
               {chart.assessments.filter((a) => a.type !== "INTAKE_HISTORY").length === 0 ? <Empty>None yet.</Empty> : chart.assessments.filter((a) => a.type !== "INTAKE_HISTORY").map((a) => (
                 <Text key={String(a._id)} variant="body-default-s">
                   {a.type === "PHQ9" ? "PHQ-9" : a.type === "GAD7" ? "GAD-7" : pretty(a.type)}: <strong>{a.score}</strong> ({pretty(a.severity ?? "")}) · {formatDate(a.completedAt)}
+                  {a.safetyFlag?.raised && <strong className="safety-tag">{a.safetyFlag.reviewedAt ? " · self-harm item: reviewed" : " · self-harm item: needs review"}</strong>}
                 </Text>
               ))}
             </Card>
@@ -266,10 +267,10 @@ export default async function ChartPage({ params, searchParams }: PageProps<"/da
             <Card title="Documents">
               {chart.documents.length === 0 ? <Empty>None uploaded.</Empty> : chart.documents.map((d) => (
                 <Text key={String(d._id)} variant="body-default-s">
-                  {pretty(d.category)} · {formatDate(created(d))} · uploaded by {pretty(d.uploadedByRole)}
+                  {pretty(d.category)} · {formatDate(created(d))} · uploaded by {pretty(d.uploadedByRole)} · <a href={`/documents/${d._id}?view=1`} target="_blank" rel="noopener">View</a> · <a href={`/documents/${d._id}`}>Download</a>
                 </Text>
               ))}
-              <Text variant="body-default-xs" onBackground="neutral-weak">Secure preview and download arrive with the document vault (Phase 4).</Text>
+              <Text variant="body-default-xs" onBackground="neutral-weak">Files are encrypted; every view and download is recorded in the audit trail.</Text>
             </Card>
           )}
         </Grid>

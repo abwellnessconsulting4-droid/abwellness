@@ -4,7 +4,7 @@ Phase 4 builds the client-facing side of the platform at `/portal`. It's deliver
 
 1. Billing and payments (Use Case 4), done
 2. Appointments: booking, cancelling, and joining video visits, done
-3. Consents, intake forms, and documents
+3. Consents, intake forms, and documents, done
 4. Secure messages
 
 ## Slice 1: Billing and payments (Use Case 4)
@@ -75,3 +75,49 @@ The service code is in `lib/services/portal-appointments.ts`, which wraps `sched
   - Joining checks the client in. The appointment becomes CHECKED_IN, the session becomes IN_WAITING_ROOM, and the client appears in the provider's waiting room.
   - The page refreshes every 10 seconds until the provider admits the client, then shows the in-session view. Video is the same mock tile as on the staff side.
 - **Tests:** `tests/db/portal-appointments.test.ts` covers the visit list, booking rules (own provider, visit types, consent), fee and no-fee cancellations, and the join window.
+
+## Slice 3: Documents, consents, and intake
+
+### Documents (`lib/services/documents.ts`, `lib/storage.ts`, `app/documents/[id]/route.ts`)
+
+- **Encryption:** files are encrypted in the app before storage (`encryptBytes`: AES-256-GCM with the document id as AAD). The storage provider only holds ciphertext, and a stored file can't be swapped onto another record. Original file names are encrypted too.
+- **Storage:**
+  - **Vercel Blob, private store** (`STORAGE_PROVIDER=vercel-blob`, or picked automatically when `BLOB_READ_WRITE_TOKEN` / `BLOB_STORE_ID` is present).
+    - Create the store with `vercel blob create-store <name> --access private` and connect it to the project. Connected projects authenticate with OIDC; locally, set `BLOB_READ_WRITE_TOKEN`.
+    - **Sign Vercel's BAA before storing real PHI.**
+  - **Local** (`.data/uploads`, git-ignored) for development and tests. It's refused on Vercel, and its paths are excluded from build tracing.
+- **Upload checks:**
+  - Files are limited to 4 MB, because Vercel caps request bodies at about 4.5 MB (`serverActions.bodySizeLimit` is set to 4.4 MB).
+  - The type is identified from the file's actual bytes; only PDF, JPEG, PNG, and WebP are accepted.
+  - Clients can upload only these categories: insurance card front and back, photo ID, referral, lab result, external records.
+  - Malware scanning is still to be added. Documents go straight to AVAILABLE.
+- **Downloads:** `/documents/[id]` serves both staff and clients.
+  - Access goes through the `document` resource, including the category limits for billing and front desk.
+  - Each download is audited as DOWNLOAD.
+  - Responses send `no-store`, `nosniff`, and a sandboxing CSP header. `?view=1` opens the file inline.
+  - Seeded documents have no stored file, so downloading them returns a clear 404.
+
+### Consents (`lib/services/consents.ts`, `/portal/consents`)
+
+- Covers the four mandatory agreements. Each is shown as signed, needs signature, expired (`renewalDays`), or updated (a newer published version).
+- The client signs the exact version shown. The form carries the template's content hash, and a stale hash is refused.
+- Signing is a typed full name that must match the account. The signature is the same `buildSignature` record that staff signatures use.
+- Signing the telehealth consent unlocks video booking and joining.
+- Releases of information and withdrawals are handled by staff for now.
+
+### Intake screeners (`lib/services/assessments.ts`, `/portal/intake`)
+
+- PHQ-9 and GAD-7 use the published wording and severity bands. Item-level answers are encrypted; the score and severity are stored in plain form for the chart and analytics.
+- **Safety:** any PHQ-9 item 9 answer above 0 triggers all of the following:
+  - The client immediately sees crisis resources (988, 911, Crisis Text Line).
+  - The assessment's `safetyFlag` is raised.
+  - The assigned provider gets an email with no PHI, asking them to sign in.
+  - The flag appears at the top of the provider's dashboard until they mark it reviewed (an audited `reviewSafetyFlag`). The chart's assessment list shows the flag as well.
+
+### Tests
+
+`tests/db/portal-records.test.ts` covers:
+
+- encrypted storage round trips, file-type and size checks, and category limits;
+- consent states, stale or wrong-name signatures, and expiry;
+- screener scoring and the safety flag path, including that the email contains no client details.

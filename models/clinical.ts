@@ -34,6 +34,13 @@ export const HealthAssessmentSchema = new Schema(
       heartRate: Number,
       recordedAt: Date,
     },
+    // PHQ-9 item 9 (thoughts of self-harm) answered above "not at all".
+    safetyFlag: {
+      _id: false,
+      raised: { type: Boolean, default: false },
+      reviewedAt: Date,
+      reviewedBy: ref("User", false),
+    },
     completedBy: ref("User"),
     completedByRole: { type: String, required: true },
     completedAt: { type: Date, default: Date.now },
@@ -239,7 +246,7 @@ export const ClinicalDocumentSchema = new Schema(
     category: { type: String, enum: DOCUMENT_CATEGORIES, required: true },
     storage: {
       _id: false,
-      provider: { type: String, enum: ["S3", "LOCAL"], required: true },
+      provider: { type: String, enum: ["S3", "LOCAL", "VERCEL_BLOB"], required: true },
       bucket: String,
       key: { type: String, required: true }, // "<patientId>/<documentId>": never a filename
     },

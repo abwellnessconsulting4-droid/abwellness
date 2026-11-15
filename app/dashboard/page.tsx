@@ -1,10 +1,12 @@
-import { Column, Grid, Heading, Icon, Row, Text } from "@once-ui-system/core";
+import { Column, Grid, Heading, Icon, Row, SmartLink, Text } from "@once-ui-system/core";
+import { reviewSafetyAction } from "@/app/dashboard/safety-actions";
+import { openSafetyFlags } from "@/lib/services/assessments";
 import { verifyAuditChain } from "@/lib/audit";
 import { authzToken, withScope, type AuthContext } from "@/lib/authz";
 import { requireSession } from "@/lib/dal";
 import { connectToDatabase } from "@/lib/mongodb";
 import { can, type Resource } from "@/lib/rbac";
-import { dayRange, formatMoney } from "@/lib/time";
+import { dayRange, formatDateTime, formatMoney } from "@/lib/time";
 import type { IconName } from "@/resources/icons";
 import { Appointment, Claim, ClinicalNote, InsurancePolicy, Invoice, Patient, WaitlistEntry } from "@/models";
 
@@ -74,7 +76,7 @@ async function statsFor(ctx: AuthContext): Promise<Stat[]> {
 export default async function DashboardHome() {
   const ctx = await requireSession();
   await connectToDatabase();
-  const [stats, chain] = await Promise.all([statsFor(ctx), ctx.role === "SUPER_ADMIN" ? verifyAuditChain() : null]);
+  const [stats, chain, flags] = await Promise.all([statsFor(ctx), ctx.role === "SUPER_ADMIN" ? verifyAuditChain() : null, ctx.role === "PROVIDER" ? openSafetyFlags(ctx) : Promise.resolve([])]);
   const firstName = ctx.displayName?.replace(/^Dr\.\s*/, "").split(" ")[0];
 
   return (
@@ -87,6 +89,22 @@ export default async function DashboardHome() {
           Here&apos;s what needs attention today.
         </Text>
       </Column>
+      {flags.length > 0 && (
+        <div role="alert" className="crisis-notice">
+          <Heading as="h2" variant="heading-strong-m">Safety responses to review</Heading>
+          <Text variant="body-default-s">These clients answered the PHQ-9 self-harm question above &quot;not at all&quot;. Reach out per your safety protocol, document it in the chart, then mark it reviewed.</Text>
+          <ul>
+            {flags.map((f) => (
+              <li key={f.id}>
+                <SmartLink href={`/dashboard/patients/${f.patientId}?tab=problems`}>{f.patient}</SmartLink> · PHQ-9 score {f.score} · {formatDateTime(f.completedAt)}
+                <form action={reviewSafetyAction.bind(null, f.id)} className="inline-form">
+                  <button type="submit" className="link-button">Mark reviewed</button>
+                </form>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <Grid columns="3" gap="16" m={{ columns: 2 }} s={{ columns: 1 }}>
         {stats.map((stat) => (

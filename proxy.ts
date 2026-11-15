@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getSiteMode } from "@/lib/site-mode";
 
 /** Signed-in app areas (staff dashboard, patient portal, account security). */
-const APP_PREFIXES = ["/dashboard", "/portal", "/account"];
+const APP_PREFIXES = ["/dashboard", "/portal", "/account", "/documents"];
 /** Reachable in every site mode so staff and patients can sign in before launch. */
 const AUTH_PAGES = ["/login", "/forgot-password", "/reset-password"];
 
