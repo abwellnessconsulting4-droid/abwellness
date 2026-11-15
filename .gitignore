@@ -40,3 +40,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local-only notes (seed credentials, etc.)
+*.local.md
+
+# Local encrypted document storage (development)
+.data/
