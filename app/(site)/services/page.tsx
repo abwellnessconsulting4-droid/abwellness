@@ -14,6 +14,7 @@ export default function ServicesPage() {
   return (
     <>
       <PageHero
+        icon="handHeart"
         eyebrow="Services"
         title="Support for people, and for the organizations that serve them"
         description={`Practical help for individuals and families, and training and consultation for organizations, built on more than 20 years in social work, behavioral health, and housing. ${LANGUAGES_NOTE}`}

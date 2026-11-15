@@ -14,6 +14,7 @@ export default function ApproachPage() {
   return (
     <>
       <PageHero
+        icon="compass"
         eyebrow="Our approach"
         title="Calm, clear, and built around you"
         description="Lasting change rarely comes from a single breakthrough. It comes from steady steps, the right support, and a plan you believe in."

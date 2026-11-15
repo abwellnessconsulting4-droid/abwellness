@@ -14,6 +14,7 @@ export default function AboutPage() {
   return (
     <>
       <PageHero
+        icon="heartHandshake"
         eyebrow="About us"
         title="Steady support for the moments that shape a life"
         description={`${SITE_NAME} exists so that people, and the organizations that serve them, have a calm, capable partner for building wellbeing that lasts.`}

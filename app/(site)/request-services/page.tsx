@@ -14,6 +14,7 @@ export default function RequestServicesPage() {
   return (
     <>
       <PageHero
+        icon="clipboard"
         eyebrow="Request services"
         title="Let's find the right support together"
         description="Share a few details and we'll reach out to schedule a free introductory call. It takes about two minutes."

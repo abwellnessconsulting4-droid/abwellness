@@ -5,7 +5,8 @@ import "./globals.css";
 
 import classNames from "classnames";
 import type { Viewport } from "next";
-import { Column, Flex, Meta, ThemeInit } from "@once-ui-system/core";
+import { Column, Flex, Meta } from "@once-ui-system/core";
+import { ThemeInit } from "@/components/theme-init";
 import { JsonLd, organizationJsonLd } from "@/components/site/json-ld";
 import { Providers } from "@/components/providers";
 import { SITE_NAME } from "@/lib/constants";

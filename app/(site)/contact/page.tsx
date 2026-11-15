@@ -14,6 +14,7 @@ export default function ContactPage() {
   return (
     <>
       <PageHero
+        icon="mail"
         eyebrow="Contact"
         title="We'd love to hear from you"
         description="Send a note and we'll reply within [two business days]. Looking to start services? The request form is the fastest route."
