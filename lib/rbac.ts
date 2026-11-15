@@ -78,7 +78,7 @@ export const PERMISSIONS: Matrix = {
     paymentPlan: ALL_CRUD,
     consentTemplate: ALL_CRUD,
     signedConsent: { read: "all", export: "all" },
-    compliance: ALL_CRUD,
+    compliance: { ...ALL_CRUD, export: "all" }, // access-review evidence exports
     schedule: ALL_CRUD,
     appointment: ALL_CRUD,
     waitlist: ALL_CRUD,

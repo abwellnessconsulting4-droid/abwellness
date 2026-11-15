@@ -1,7 +1,8 @@
 "use client";
 
+import { useActionForm } from "@/components/use-action-form";
 import type React from "react";
-import { useActionState, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { Button, Column, Feedback, Input, Row, Tag, Text, Textarea } from "@once-ui-system/core";
 import { codeSearchAction, type FormState } from "@/app/dashboard/patients/actions";
 
@@ -62,7 +63,7 @@ function CodePicker({ kind, onPick }: { kind: "diagnosis" | "procedure"; onPick:
 }
 
 export function NoteEditor({ action, mode, initial, appointments = [], sessionMinutes }: NoteEditorProps) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const [state, formAction, pending] = useActionForm(action, {});
   const [noteType, setNoteType] = useState<Kind>(initial?.noteType ?? "SOAP");
   const [codes, setCodes] = useState<string[]>(initial?.diagnosisCodes ?? []);
   const [lines, setLines] = useState<Line[]>(initial?.serviceLines ?? []);
@@ -70,7 +71,7 @@ export function NoteEditor({ action, mode, initial, appointments = [], sessionMi
   const s = initial?.sections ?? {};
 
   return (
-    <form action={formAction} className="fill-width">
+    <form {...formAction} className="fill-width">
       <input type="hidden" name="diagnosisCodes" value={codes.join(",")} />
       <input type="hidden" name="serviceLines" value={JSON.stringify(lines)} />
       <Column gap="20">

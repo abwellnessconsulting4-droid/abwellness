@@ -24,7 +24,7 @@ export const STAFF_NAV: NavItem[] = [
   { label: "Analytics", href: "/dashboard/analytics", icon: "sparkles", requires: { resource: "analytics", action: "read" }, ready: true },
   { label: "Users", href: "/dashboard/users", icon: "people", requires: { resource: "user", action: "update" }, ready: true },
   { label: "Audit trail", href: "/dashboard/audit", icon: "shield", requires: { resource: "auditLog", action: "read" }, ready: true },
-  { label: "Compliance", href: "/dashboard/compliance", icon: "lock", requires: { resource: "compliance", action: "read" }, ready: false },
+  { label: "Compliance", href: "/dashboard/compliance", icon: "lock", requires: { resource: "compliance", action: "read" }, ready: true },
 ];
 
 export const PATIENT_NAV: NavItem[] = [

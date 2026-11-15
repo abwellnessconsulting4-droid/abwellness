@@ -1,13 +1,14 @@
 "use client";
 
-import { useActionState, type ReactNode } from "react";
+import { useActionForm } from "@/components/use-action-form";
+import { type ReactNode } from "react";
 import { Button, Column, Feedback, Input, Row } from "@once-ui-system/core";
-import { clinicalAction, type FormState } from "@/app/dashboard/patients/actions";
+import { clinicalAction } from "@/app/dashboard/patients/actions";
 
 function ClinicalForm({ patientId, intent, submitLabel, children, compact }: { patientId: string; intent: string; submitLabel: string; children?: ReactNode; compact?: boolean }) {
-  const [state, action, pending] = useActionState<FormState, FormData>(clinicalAction.bind(null, patientId), {});
+  const [state, action, pending] = useActionForm(clinicalAction.bind(null, patientId), {}, { resetOnSuccess: true });
   return (
-    <form action={action} className={compact ? undefined : "fill-width"}>
+    <form {...action} className={compact ? undefined : "fill-width"}>
       <input type="hidden" name="intent" value={intent} />
       <Column gap="8">
         {children && <Row gap="8" wrap vertical="end" s={{ direction: "column" }}>{children}</Row>}

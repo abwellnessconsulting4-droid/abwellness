@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionForm } from "@/components/use-action-form";
+import { useState } from "react";
 import { Button, Column, Feedback, Input, Row, Text } from "@once-ui-system/core";
-import { inviteStaffAction, type ActionState } from "@/app/dashboard/users/actions";
+import { inviteStaffAction } from "@/app/dashboard/users/actions";
 
 const STAFF_ROLES = [
   { value: "PROVIDER", label: "Provider", hint: "Sees and documents care for their assigned clients." },
@@ -12,11 +13,11 @@ const STAFF_ROLES = [
 ];
 
 export function InviteForm() {
-  const [state, formAction, pending] = useActionState<ActionState, FormData>(inviteStaffAction, {});
+  const [state, formAction, pending] = useActionForm(inviteStaffAction, {}, { resetOnSuccess: true });
   const [role, setRole] = useState("PROVIDER");
 
   return (
-    <form action={formAction} className="fill-width">
+    <form {...formAction} className="fill-width">
       <Column fillWidth gap="16">
         <Row gap="12" s={{ direction: "column" }}>
           <Input id="name" name="name" label="Full name" autoComplete="off" required />

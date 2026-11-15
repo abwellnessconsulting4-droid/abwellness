@@ -1,15 +1,16 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionForm } from "@/components/use-action-form";
+
 import { Button, Column, Feedback, Input, Row, Text } from "@once-ui-system/core";
 import type { RecordsState } from "@/app/portal/records-actions";
 
 type Action = (state: RecordsState, form: FormData) => Promise<RecordsState>;
 
 export function UploadForm({ action, categories }: { action: Action; categories: { value: string; label: string }[] }) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const [state, formAction, pending] = useActionForm(action, {});
   return (
-    <form action={formAction} className="fill-width">
+    <form {...formAction} className="fill-width">
       <Column gap="12">
         <Row gap="12" wrap s={{ direction: "column" }}>
           <label className="native-field">
@@ -39,9 +40,9 @@ export function UploadForm({ action, categories }: { action: Action; categories:
 }
 
 export function ConsentSignForm({ action, contentHash, expectedName }: { action: Action; contentHash: string; expectedName: string }) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const [state, formAction, pending] = useActionForm(action, {});
   return (
-    <form action={formAction} className="fill-width">
+    <form {...formAction} className="fill-width">
       <input type="hidden" name="contentHash" value={contentHash} />
       <Column gap="12">
         <label className="native-check">
@@ -61,9 +62,9 @@ export function ConsentSignForm({ action, contentHash, expectedName }: { action:
 }
 
 export function ScreenerForm({ action, items, choices, intro }: { action: Action; items: readonly string[]; choices: readonly string[]; intro: string }) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const [state, formAction, pending] = useActionForm(action, {});
   return (
-    <form action={formAction} className="fill-width">
+    <form {...formAction} className="fill-width">
       <Column gap="20">
         <Text variant="body-default-m">{intro}</Text>
         {items.map((item, i) => (

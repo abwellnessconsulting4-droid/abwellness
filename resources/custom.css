@@ -908,3 +908,31 @@ html.translated-rtl .site-header__mobile-menu {
 .star-rating input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .star-rating label:has(input:checked), .star-rating label:has(~ label input:checked) { color: var(--viz-series-2, #eb6834); }
 .star-rating label:has(input:focus-visible) { outline: 2px solid var(--brand-border-strong); border-radius: 4px; }
+
+/* Compliance */
+.check-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.check-list li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--neutral-alpha-weak);
+}
+.check-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.check-pass .check-icon { background: var(--success-alpha-weak); color: var(--success-on-background-strong); }
+.check-warn .check-icon { background: var(--warning-alpha-weak); color: var(--warning-on-background-strong); }
+.check-fail { border-color: var(--danger-border-medium); }
+.check-fail .check-icon { background: var(--danger-alpha-weak); color: var(--danger-on-background-strong); }
+.evidence-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.evidence-list li { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--neutral-alpha-weak); }
+.cell-notes { max-width: 280px; font-size: 0.8rem; color: var(--neutral-on-background-medium); }

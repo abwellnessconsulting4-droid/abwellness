@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, type ReactNode } from "react";
+import { useActionForm } from "@/components/use-action-form";
+import { type ReactNode } from "react";
 import { Button, Column, Feedback, Input, Row, Text } from "@once-ui-system/core";
-import { userAction, type ActionState } from "@/app/dashboard/users/actions";
+import { userAction } from "@/app/dashboard/users/actions";
 
 interface UserActionsProps {
   userId: string;
@@ -31,7 +32,7 @@ function ActionPanel({ title, description, intent, userId, email, submitLabel, d
   danger?: boolean;
   children?: ReactNode;
 }) {
-  const [state, formAction, pending] = useActionState<ActionState, FormData>(userAction, {});
+  const [state, formAction, pending] = useActionForm(userAction, {});
   return (
     <details className="action-panel">
       <summary>
@@ -40,7 +41,7 @@ function ActionPanel({ title, description, intent, userId, email, submitLabel, d
           {description}
         </Text>
       </summary>
-      <form action={formAction} className="fill-width">
+      <form {...formAction} className="fill-width">
         <input type="hidden" name="intent" value={intent} />
         <input type="hidden" name="userId" value={userId} />
         {email && <input type="hidden" name="email" value={email} />}

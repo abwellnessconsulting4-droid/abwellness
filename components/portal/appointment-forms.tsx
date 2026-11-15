@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionForm } from "@/components/use-action-form";
+
 import { Button, Column, Feedback, Input, Row, Text } from "@once-ui-system/core";
 import type { PortalApptState } from "@/app/portal/appointments/actions";
 
@@ -8,9 +9,9 @@ type Action = (state: PortalApptState, form: FormData) => Promise<PortalApptStat
 
 /** One button per open time; each submits the booking. */
 export function SlotPicker({ action, providerId, visitType, mode, days }: { action: Action; providerId: string; visitType: string; mode: string; days: { label: string; slots: { iso: string; label: string }[] }[] }) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const [state, formAction, pending] = useActionForm(action, {});
   return (
-    <form action={formAction}>
+    <form {...formAction}>
       <input type="hidden" name="providerId" value={providerId} />
       <input type="hidden" name="visitType" value={visitType} />
       <input type="hidden" name="mode" value={mode} />
@@ -36,9 +37,9 @@ export function SlotPicker({ action, providerId, visitType, mode, days }: { acti
 }
 
 export function CancelForm({ action, late }: { action: Action; late: boolean }) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const [state, formAction, pending] = useActionForm(action, {});
   return (
-    <form action={formAction} className="fill-width">
+    <form {...formAction} className="fill-width">
       <Column gap="12">
         <Input id="reason" name="reason" label="Reason (shared with your care team)" required minLength={3} />
         {state.error && <Feedback variant="danger" description={state.error} />}
@@ -51,9 +52,9 @@ export function CancelForm({ action, late }: { action: Action; late: boolean }) 
 }
 
 export function JoinButton({ action }: { action: (state: PortalApptState) => Promise<PortalApptState> }) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const [state, formAction, pending] = useActionForm(action, {});
   return (
-    <form action={formAction}>
+    <form {...formAction}>
       <Row gap="8" vertical="center" wrap>
         <Button type="submit" size="s" variant="primary" label="Join video visit" loading={pending} disabled={pending} />
         {state.error && <Text variant="body-default-xs" onBackground="danger-medium">{state.error}</Text>}
@@ -64,13 +65,13 @@ export function JoinButton({ action }: { action: (state: PortalApptState) => Pro
 
 /** Post-visit rating: 1–5 stars and an optional comment. */
 export function RateVisit({ action }: { action: Action }) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const [state, formAction, pending] = useActionForm(action, {});
   return (
     <details className="action-panel inline-panel">
       <summary>
         <Text variant="label-strong-s">Rate this visit</Text>
       </summary>
-      <form action={formAction} className="fill-width">
+      <form {...formAction} className="fill-width">
         <Column gap="8" paddingTop="8">
           <fieldset className="star-rating">
             <legend>How was your visit?</legend>

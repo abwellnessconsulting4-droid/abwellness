@@ -575,8 +575,8 @@ export async function seedEmr(options: { password?: string } = {}): Promise<Seed
   // Compliance registry
   await ComplianceRecord.create([
     { kind: "BAA", vendor: "MongoDB Atlas (M10+ dedicated)", service: "Encrypted database", baaStatus: "PENDING", notes: "Required before real patient data.", recordedBy: user("camila") },
-    { kind: "BAA", vendor: "Vercel", service: "Application hosting and logs", baaStatus: "PENDING", recordedBy: user("camila") },
-    { kind: "BAA", vendor: "AWS (S3, KMS)", service: "Document vault and keys", baaStatus: "PENDING", recordedBy: user("camila") },
+    { kind: "BAA", vendor: "Vercel", service: "Hosting, logs, and private Blob document storage", baaStatus: "PENDING", recordedBy: user("camila") },
+    { kind: "BAA", vendor: "Claims clearinghouse (to be selected)", service: "837/835 claim submission and remittances", baaStatus: "PENDING", recordedBy: user("camila") },
     { kind: "BAA", vendor: "Daily.co", service: "Telehealth video", baaStatus: "PENDING", recordedBy: user("camila") },
     { kind: "BAA", vendor: "Stripe", service: "Payment processing", baaStatus: "NOT_APPLICABLE", notApplicableReason: "Payment processing exemption (HIPAA §1179); no PHI in payment metadata.", recordedBy: user("camila") },
     { kind: "BAA", vendor: "Resend", service: "Transactional email", baaStatus: "NOT_APPLICABLE", notApplicableReason: "No PHI sent: notification-only emails.", recordedBy: user("camila") },

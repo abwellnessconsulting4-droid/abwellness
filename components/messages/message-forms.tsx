@@ -1,15 +1,16 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionForm } from "@/components/use-action-form";
+
 import { Button, Column, Feedback, Input, Row, Text, Textarea } from "@once-ui-system/core";
 import type { MessageState } from "@/app/messages-actions";
 
 type Action = (state: MessageState, form: FormData) => Promise<MessageState>;
 
 export function ReplyForm({ action, placeholder }: { action: Action; placeholder: string }) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const [state, formAction, pending] = useActionForm(action, {});
   return (
-    <form action={formAction} className="fill-width">
+    <form {...formAction} className="fill-width">
       <Column gap="8">
         <Textarea id="body" name="body" label="Reply" lines={4} required maxLength={5000} placeholder={placeholder} />
         {state.error && <Feedback variant="danger" description={state.error} />}
@@ -34,9 +35,9 @@ export function NewThreadForm({
   defaultPatientId?: string;
   clientFacing: boolean;
 }) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const [state, formAction, pending] = useActionForm(action, {});
   return (
-    <form action={formAction} className="fill-width">
+    <form {...formAction} className="fill-width">
       <Column gap="12">
         {patients && (
           <label className="native-field">

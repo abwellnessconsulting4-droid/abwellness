@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionForm } from "@/components/use-action-form";
+import { useState } from "react";
 import { Button, Column, Feedback, Input, Row, Text, Textarea } from "@once-ui-system/core";
 import type { ClaimState } from "@/app/dashboard/billing/actions";
 import { COMMON_DENIALS } from "@/lib/clearinghouse";
@@ -68,9 +69,9 @@ function LineInputs({ lines }: { lines: EditableLine[] }) {
 
 /** DRAFT: review lines, run the scrubber, and mark ready. */
 export function ReviewPanel({ action, lines }: { action: Action; lines: EditableLine[] }) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const [state, formAction, pending] = useActionForm(action, {});
   return (
-    <form action={formAction} className="fill-width">
+    <form {...formAction} className="fill-width">
       <Column gap="12">
         <LineInputs lines={lines} />
         <Result state={state} />
@@ -85,9 +86,9 @@ export function ReviewPanel({ action, lines }: { action: Action; lines: Editable
 
 /** READY_TO_SUBMIT: send through the clearinghouse. */
 export function SubmitPanel({ action }: { action: Action }) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const [state, formAction, pending] = useActionForm(action, {});
   return (
-    <form action={formAction}>
+    <form {...formAction}>
       <Column gap="12">
         <Result state={state} />
         <Row gap="8" wrap>
@@ -114,8 +115,8 @@ function toCents(v: string) {
 
 /** SUBMITTED/ACCEPTED: post the payer's response (835 ERA / EOB). */
 export function RemittancePanel({ action, lines }: { action: Action; lines: EditableLine[] }) {
-  const [payState, payAction, paying] = useActionState(action, {});
-  const [denyState, denyAction, denying] = useActionState(action, {});
+  const [payState, payAction, paying] = useActionForm(action, {});
+  const [denyState, denyAction, denying] = useActionForm(action, {});
   const [values, setValues] = useState<Record<string, string>>({});
   const [carc, setCarc] = useState<string>(COMMON_DENIALS[0].carc);
   const description = COMMON_DENIALS.find((d) => d.carc === carc)?.description ?? "";
@@ -129,7 +130,7 @@ export function RemittancePanel({ action, lines }: { action: Action; lines: Edit
         <summary>
           <Text variant="label-strong-m">Post payment</Text>
         </summary>
-        <form action={payAction} className="fill-width">
+        <form {...payAction} className="fill-width">
           <input type="hidden" name="intent" value="post-payment" />
           <Column gap="12" paddingTop="12">
             {lines.map((l) => {
@@ -177,7 +178,7 @@ export function RemittancePanel({ action, lines }: { action: Action; lines: Edit
         <summary>
           <Text variant="label-strong-m">Post denial</Text>
         </summary>
-        <form action={denyAction} className="fill-width">
+        <form {...denyAction} className="fill-width">
           <input type="hidden" name="intent" value="post-denial" />
           <Column gap="12" paddingTop="12">
             <label className="native-field">
@@ -208,9 +209,9 @@ export function RemittancePanel({ action, lines }: { action: Action; lines: Edit
 
 /** DENIED/REJECTED: correct the lines, explain the correction, and resubmit. */
 export function ResubmitPanel({ action, lines }: { action: Action; lines: EditableLine[] }) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const [state, formAction, pending] = useActionForm(action, {});
   return (
-    <form action={formAction} className="fill-width">
+    <form {...formAction} className="fill-width">
       <input type="hidden" name="intent" value="resubmit" />
       <Column gap="12">
         <LineInputs lines={lines} />

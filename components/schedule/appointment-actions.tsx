@@ -1,14 +1,15 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionForm } from "@/components/use-action-form";
+
 import { Button, Column, Feedback, Input, Row, Text } from "@once-ui-system/core";
-import { appointmentAction, bookAction, bookFromWaitlistAction, type ScheduleState } from "@/app/dashboard/schedule/actions";
+import { appointmentAction, bookAction, bookFromWaitlistAction } from "@/app/dashboard/schedule/actions";
 
 function WaitlistBook({ entryId, patientName, slot }: { entryId: string; patientName: string; slot: { providerId: string; mode: string; visitType: string; start: string } }) {
-  const [state, action, pending] = useActionState<ScheduleState, FormData>(bookFromWaitlistAction, {});
+  const [state, action, pending] = useActionForm(bookFromWaitlistAction, {});
   if (state.success) return <Feedback variant="success" description={`${patientName}: ${state.success}`} />;
   return (
-    <form action={action}>
+    <form {...action}>
       <input type="hidden" name="entryId" value={entryId} />
       {Object.entries(slot).map(([k, v]) => (
         <input key={k} type="hidden" name={k} value={v} />
@@ -22,7 +23,7 @@ function WaitlistBook({ entryId, patientName, slot }: { entryId: string; patient
 }
 
 export function AppointmentActions({ appointmentId, status, startsInPast }: { appointmentId: string; status: string; startsInPast: boolean }) {
-  const [state, action, pending] = useActionState<ScheduleState, FormData>(appointmentAction, {});
+  const [state, action, pending] = useActionForm(appointmentAction, {});
   const active = ["SCHEDULED", "CONFIRMED", "CHECKED_IN"].includes(status);
   if (!active && !state.success) return null;
 
@@ -31,14 +32,14 @@ export function AppointmentActions({ appointmentId, status, startsInPast }: { ap
       {active && !state.cancel && (
         <Row gap="8" wrap>
           {["SCHEDULED", "CONFIRMED"].includes(status) && (
-            <form action={action}>
+            <form {...action}>
               <input type="hidden" name="appointmentId" value={appointmentId} />
               <input type="hidden" name="intent" value="check-in" />
               <Button type="submit" size="s" variant="secondary" label="Check in" disabled={pending} />
             </form>
           )}
           {startsInPast && (
-            <form action={action}>
+            <form {...action}>
               <input type="hidden" name="appointmentId" value={appointmentId} />
               <input type="hidden" name="intent" value="no-show" />
               <Button type="submit" size="s" variant="tertiary" label="No-show" disabled={pending} />
@@ -48,7 +49,7 @@ export function AppointmentActions({ appointmentId, status, startsInPast }: { ap
             <summary>
               <Text variant="label-strong-s">Cancel…</Text>
             </summary>
-            <form action={action} className="fill-width">
+            <form {...action} className="fill-width">
               <input type="hidden" name="appointmentId" value={appointmentId} />
               <input type="hidden" name="intent" value="cancel" />
               <Column gap="8" paddingTop="8">
@@ -79,9 +80,9 @@ export function AppointmentActions({ appointmentId, status, startsInPast }: { ap
 }
 
 export function BookSlotButton({ label, fields }: { label: string; fields: Record<string, string> }) {
-  const [state, action, pending] = useActionState<ScheduleState, FormData>(bookAction, {});
+  const [state, action, pending] = useActionForm(bookAction, {});
   return (
-    <form action={action}>
+    <form {...action}>
       {Object.entries(fields).map(([k, v]) => (
         <input key={k} type="hidden" name={k} value={v} />
       ))}

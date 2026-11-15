@@ -1,13 +1,14 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionForm } from "@/components/use-action-form";
+
 import { Button, Column, Feedback, Textarea } from "@once-ui-system/core";
 import type { FormState } from "@/app/dashboard/patients/actions";
 
 export function AddendumForm({ action }: { action: (state: FormState, form: FormData) => Promise<FormState> }) {
-  const [state, formAction, pending] = useActionState(action, {});
+  const [state, formAction, pending] = useActionForm(action, {}, { resetOnSuccess: true });
   return (
-    <form action={formAction} className="fill-width">
+    <form {...formAction} className="fill-width">
       <Column gap="8">
         <Textarea id="addendum" name="addendum" label="Add an addendum" lines={3} required />
         <div aria-live="polite">

@@ -65,3 +65,34 @@ Every tab view is audited as a VIEW of `Analytics`, and every export as an EXPOR
 ### Tests
 
 `tests/db/analytics.test.ts` checks every headline number against the seeded data, role scoping, and survey rules (own visit, completed, once, within 30 days).
+
+## Slice 2: Compliance (`/dashboard/compliance`, super admin only)
+
+The service code is in `lib/services/compliance.ts`, with server actions in `app/dashboard/compliance/actions.ts` and the export in `app/dashboard/compliance/access-review/route.ts`. Records are `ComplianceRecord` documents. Every view, change, sign-off, and export is audited.
+
+- **Automated checks** run on each visit to the page:
+  - encryption keys (a separate blind-index key is recommended);
+  - document storage (private Blob connected; fails on Vercel without it);
+  - `CRON_SECRET`;
+  - payment processor, telehealth video, and email (whether each is simulated, mocked, or content-free);
+  - staff two-step verification;
+  - audit hash-chain integrity;
+  - notes unsigned for more than 48 hours;
+  - PHQ-9 safety flags unreviewed for more than 24 hours.
+
+  Each result shows an icon and a label (OK / Attention / Action needed), never color alone.
+- **BAA registry:** vendor, service, status, signed and renewal dates, and notes. A gap is a BAA that's pending, expired, or active but renewing within 60 days. An active BAA needs a signed date; "not applicable" needs a reason (for example Stripe's payment-processing exemption, or Resend carrying no PHI). The seed lists MongoDB Atlas, Vercel (hosting and private Blob storage), the claims clearinghouse, Daily, Stripe, and Resend.
+- **Backup restore drills:** snapshot time, restore time, target, result, and duration. The target must be non-production: the app's own database name (from `MONGODB_URI`) and names containing "prod" are refused. A drill is due when the last passing one is more than 90 days old.
+- **Access review:** the staff list shows role, status, two-step setup, and last sign-in. The CSV export is evidence for the review. The quarterly sign-off records a snapshot count and is due every 90 days. Clients are excluded.
+- **Incidents and risk assessments:** a free-text log; the form tells staff to refer to clients by MRN only.
+- **RBAC:** `compliance` now includes `export` for the super admin.
+
+## Cross-cutting fix: forms keep their input on errors
+
+React 19 resets every uncontrolled field after a `<form action={fn}>` action finishes, even when the server returns a validation error, so users lost what they'd typed (including whole clinical notes).
+
+`components/use-action-form.ts` (`useActionForm`) replaces `useActionState` for all data-entry forms:
+
+- It submits via `onSubmit`, using `new FormData(form, submitter)` so the clicked button's `intent` value is kept.
+- It never auto-resets. Forms that should start blank after a successful save opt in with `resetOnSuccess`: compliance entries, clinical add forms, addenda, and staff invites.
+- The telehealth admit/end forms keep `useActionState`: they have no typed fields, and they use their own confirm `onSubmit`.
